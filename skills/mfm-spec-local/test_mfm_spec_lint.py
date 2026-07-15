@@ -8,7 +8,7 @@ filesystem, so these build nodes from text and lint them directly. Run with
 
 from __future__ import annotations
 
-from mfm_spec_lint import lint_nodes, parse_manifest, parse_node
+from mfm_spec_lint import lint_nodes, parse_manifest, parse_node, render_node
 
 MANIFEST = parse_manifest('spec_format: "0.3"\nname: "T"\nroot: root\n')
 
@@ -48,6 +48,19 @@ def test_parse_node_skips_non_nodes():
     n = parse_node("---\nid: a\ntitle: A\nparent: null\nresponsibility: x.\n---\n")
     assert n is not None and n.id == "a"
     assert n.kind == "component"  # v0.1 default applied
+
+
+def test_render_node_is_canonical_and_round_trips():
+    original = parse_node(
+        "---\nid: root\ntitle: Root\nkind: component\nparent: null\n"
+        "responsibility: Own the system.\n---\n\n## Why\nBecause it must.\n"
+    )
+    rendered = render_node(original)
+    reparsed = parse_node(rendered)
+
+    assert render_node(reparsed) == rendered
+    assert reparsed.fm == original.fm
+    assert reparsed.body.strip() == original.body.strip()
 
 
 def test_clean_spec_has_no_errors():

@@ -77,6 +77,32 @@ def parse_manifest(text: str) -> dict:
     return data if isinstance(data, dict) else {}
 
 
+def render_node(node_or_frontmatter: Node | dict, body: str | None = None) -> str:
+    """Render one node in the canonical portable representation.
+
+    Hosted and local consumers share this function so a mutation never grows a
+    service-private YAML/Markdown dialect. Passing a parsed ``Node`` preserves its
+    body; passing a frontmatter mapping requires the body separately.
+    """
+    if isinstance(node_or_frontmatter, Node):
+        frontmatter = node_or_frontmatter.fm
+        node_body = node_or_frontmatter.body if body is None else body
+    else:
+        frontmatter = node_or_frontmatter
+        node_body = body or ""
+
+    text = yaml.safe_dump(
+        frontmatter,
+        sort_keys=False,
+        allow_unicode=True,
+        default_flow_style=False,
+    ).strip()
+    node_body = node_body.strip()
+    if node_body:
+        return f"---\n{text}\n---\n\n{node_body}\n"
+    return f"---\n{text}\n---\n"
+
+
 def _edge_target(e) -> str | None:
     if isinstance(e, str):
         return e
