@@ -1,5 +1,13 @@
 # Changelog — mfm-spec
 
+## 0.4.0 — 2026-07-20
+**MAJOR.** Every revision becomes a coherent, human-explained decision.
+- Requires `change_note` on every revision-producing tool call: a concise explanation of
+  what changed overall, why, and any remaining review focus.
+- Batches one settled touched-node set into one revision instead of committing per node.
+- Keeps deterministic operations and canonical snapshots as evidence beneath the authored
+  note; failed validation and unchanged candidates create no revision.
+
 ## 0.3.0 — 2026-07-02
 **MAJOR.** Reorganization becomes first-class: intents, not hand-composed cascades.
 - New required tools: `mfm_spec_rename`, `mfm_spec_merge`, `mfm_spec_split`,

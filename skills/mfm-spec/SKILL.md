@@ -6,7 +6,7 @@ description: >-
   service-backed spec authoring, minimal-context reads,
   fine-grained spec mutations, validation, history, and evaluation notes. Do not use
   for local file-backed specs; use the mfm-spec-local skill for that.
-version: 0.3.0
+version: 0.4.0
 status: alpha
 public: true
 connector: mfm
@@ -65,7 +65,14 @@ blast radius across dependencies, feature touches, and evaluation subjects.
 
 The normal commit path is `mfm_spec_mutate`, not whole-node replacement. Use
 `mfm_spec_validate` first when the change is non-trivial or when you expect a repair loop.
-Every mutation carries the `base_rev` from the last read.
+Every commit carries the `base_rev` from the last read and a required `change_note`.
+
+A revision is one coherent decision, not one touched node. Once the touched-node set has
+settled, batch all of its operations, validate the complete candidate, and commit it once.
+The `change_note` is a concise human explanation of what changed overall, why, and any
+remaining point worth review. Do not mechanically enumerate files or operations: the service
+already stores those as deterministic evidence. Failed validation attempts create no revision,
+and the service rejects an unchanged candidate rather than recording an empty checkpoint.
 
 MVP operations are deliberately small and deterministic:
 
@@ -99,8 +106,8 @@ provenance the graph is for. Use the dedicated intents:
   nodes still reference it; the refusal lists them.
 
 The loop is always: `view=referrers` on the affected node → name the blast radius to the
-user → issue the intent with the current `base_rev`. Superseded nodes stay in the graph as
-provenance; evaluations keep pointing at them by design.
+user → issue the intent with the current `base_rev` and a `change_note`. Superseded nodes stay
+in the graph as provenance; evaluations keep pointing at them by design.
 
 If a write is rejected because `base_rev` is stale, re-read the map and the changed nodes,
 reconcile the user's intent against the new head, and resend a fresh mutation batch. Never
