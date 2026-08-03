@@ -6,11 +6,11 @@ description: >-
   service-backed spec authoring, minimal-context reads,
   fine-grained spec mutations, validation, history, and evaluation notes. Do not use
   for local file-backed specs; use the mfm-spec-local skill for that.
-version: 0.4.0
+version: 0.5.0
 status: alpha
 public: true
 connector: mfm
-requires: [mfm_spec_read, mfm_spec_validate, mfm_spec_mutate, mfm_spec_rename, mfm_spec_merge, mfm_spec_split, mfm_spec_retire, mfm_spec_write, mfm_spec_history, mfm_spec_import, mfm_spec_export]
+requires: [mfm_spec_project, mfm_spec_read, mfm_spec_validate, mfm_spec_mutate, mfm_spec_rename, mfm_spec_merge, mfm_spec_split, mfm_spec_retire, mfm_spec_write, mfm_spec_history, mfm_spec_import, mfm_spec_export]
 license: MIT
 ---
 
@@ -31,17 +31,20 @@ Work at the MFM Spec MVP graph level:
 
 - **Components** — responsibility owners.
 - **Features** — observable behavior linked to the components they need.
+- **Criteria** — system qualities, constraints, and prohibitions the spec must preserve,
+  pursue, or avoid.
 - **Evaluations** — feedback or judgment records against a feature, component, revision,
-  variant, or artifact.
+  criterion, variant, or artifact.
 
 Do not choose technologies, UI layouts, data schemas, implementation plans, or code. Park
 those as lower-layer details or open questions on the relevant node.
 
 ## Read Small
 
-Start every session with `mfm_spec_read` using `view=map`. Keep the whole map in context:
-node id, kind, status, parent, and edge summary. Load full bodies only for the active blast
-radius:
+Start every session with `mfm_spec_project` for current project metadata and policy, then
+use `mfm_spec_read` with `view=map`. Keep the whole map in context: node id, kind, status,
+parent, and edge summary — including criterion statement, scope, and strength. Load full
+bodies only for the active blast radius:
 
 - `view=node` for one full node,
 - `view=subtree` for a component branch,
@@ -55,11 +58,29 @@ The persisted spec is the memory. The chat is disposable.
 ## Interrogate First
 
 Let the user dump raw intent before formalizing. Classify it into components, features,
-evaluations, open questions, and lower-layer details. Propose the smallest touched node set,
-then surface the one or two boundary questions that would change the graph.
+criteria, evaluations, open questions, and lower-layer details. Propose the smallest touched
+node set, then surface the one or two boundary questions that would change the graph.
 
 Always name the touched nodes before mutating. A request rarely affects one node; trace the
 blast radius across dependencies, feature touches, and evaluation subjects.
+
+## Apply Criteria Actively
+
+Criteria are not passive review checklists. Use the active criteria to improve the spec while
+it is being written or changed:
+
+1. Read the compact statement, scope, and strength for every active criterion.
+2. Load the full body only for criteria relevant to the current discussion.
+3. Before proposing a mutation, state any pressure or conflict those criteria create.
+4. Ask for missing decisions that materially affect a criterion.
+5. Push back when a proposal violates a required criterion; for a preferred criterion, name
+   the trade-off instead of silently overriding it.
+6. Record unresolved tensions as open questions and conclusions as decisions on the relevant
+   node. Record review findings as evaluations whose subject includes the criterion.
+
+A criterion may create technical pressure — for example, latency can rule out obviously slow
+interaction shapes — but do not turn that pressure into a prescribed technology or architecture
+inside the spec. Preserve the outcome and constraint; leave the mechanism for derivation.
 
 ## Mutate Through Tools
 
@@ -123,13 +144,15 @@ structural validity; semantic quality remains your job.
 Load-bearing errors:
 
 - exactly one root component,
-- all parents, dependencies, feature touches, and checked evaluation subjects resolve,
+- all parents, dependencies, feature touches, criterion scope references, and checked
+  evaluation subjects resolve,
 - component and dependency graphs are acyclic,
-- component responsibilities, feature intents, and evaluation summaries are one sentence.
+- component responsibilities, feature intents, criterion statements, and evaluation summaries
+  are one sentence.
 
 ## Evaluation Notes
 
 When feedback arrives, record it as an `evaluation` node instead of burying it in chat or
-rewriting intent silently. Evaluations may point at a component, feature, revision, variant,
-artifact, or any combination. They record what was learned; a later explicit mutation
-promotes that lesson into the spec.
+rewriting intent silently. Evaluations may point at a component, feature, criterion, revision,
+variant, artifact, or any combination. They record what was learned; a later explicit
+mutation promotes that lesson into the spec.

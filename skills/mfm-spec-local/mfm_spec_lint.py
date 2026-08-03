@@ -19,7 +19,7 @@ from pathlib import Path
 
 import yaml
 
-UNDERSTOOD_FORMATS = {"0.1", "0.2", "0.3", "0.4"}  # earlier specs remain valid under a v0.4 tool
+UNDERSTOOD_FORMATS = {"0.1", "0.2", "0.3", "0.4", "0.5"}
 
 
 class Node:
@@ -213,9 +213,10 @@ def lint_nodes(nodes, manifest, *, manifest_problems=()) -> Report:
         fmt_failures.append(f"spec_format {manifest.get('spec_format')!r} not understood")
     rep.rule("spec/declared-format", "error", fmt_failures)
 
-    known_kinds = {"component", "feature", "evaluation"}
+    known_kinds = {"component", "feature", "criterion", "evaluation"}
     components = [n for n in nodes if n.kind == "component"]
     features = [n for n in nodes if n.kind == "feature"]
+    criteria = [n for n in nodes if n.kind == "criterion"]
     evaluations = [n for n in nodes if n.kind == "evaluation"]
     by_id = {n.id: n for n in nodes}
 
@@ -312,6 +313,41 @@ def lint_nodes(nodes, manifest, *, manifest_problems=()) -> Report:
     rep.rule("spec/touches-exists", "error", te)
     rep.rule("spec/feature-touches-nonempty", "error", ftn)
 
+    # spec/criterion-shape — a criterion has one statement, an explicit scope, and
+    # decision pressure the authoring agent can distinguish as required or preferred.
+    cs = []
+    for criterion in criteria:
+        scope = criterion.fm.get("scope")
+        if not isinstance(scope, dict) or not scope:
+            cs.append(f"{criterion.id}: scope must name the system, components, or features")
+        elif not (
+            scope.get("system") is True
+            or bool(scope.get("components"))
+            or bool(scope.get("features"))
+        ):
+            cs.append(f"{criterion.id}: scope does not select anything")
+        if criterion.fm.get("strength") not in {"required", "preferred"}:
+            cs.append(
+                f"{criterion.id}: strength {criterion.fm.get('strength')!r} is not "
+                "'required' or 'preferred'"
+            )
+    rep.rule("spec/criterion-shape", "error", cs)
+
+    # spec/criterion-scope-exists — explicit links make criterion blast radius
+    # discoverable; the agent still judges whether more links are missing.
+    cse = []
+    for criterion in criteria:
+        scope = criterion.fm.get("scope") or {}
+        if not isinstance(scope, dict):
+            continue
+        for component in scope.get("components", []) or []:
+            if component not in by_id or by_id[component].kind != "component":
+                cse.append(f"{criterion.id}: scope component {component!r} is not a component")
+        for feature in scope.get("features", []) or []:
+            if feature not in by_id or by_id[feature].kind != "feature":
+                cse.append(f"{criterion.id}: scope feature {feature!r} is not a feature")
+    rep.rule("spec/criterion-scope-exists", "error", cse)
+
     # spec/evaluation-shape
     es = []
     verdicts = {"accepted", "rejected", "mixed", "observed"}
@@ -329,10 +365,13 @@ def lint_nodes(nodes, manifest, *, manifest_problems=()) -> Report:
         subject = e.fm.get("subject") or {}
         feature = subject.get("feature") if isinstance(subject, dict) else None
         component = subject.get("component") if isinstance(subject, dict) else None
+        criterion = subject.get("criterion") if isinstance(subject, dict) else None
         if feature is not None and (feature not in by_id or by_id[feature].kind != "feature"):
             ese.append(f"{e.id}: subject.feature {feature!r} is not a feature")
         if component is not None and (component not in by_id or by_id[component].kind != "component"):
             ese.append(f"{e.id}: subject.component {component!r} is not a component")
+        if criterion is not None and (criterion not in by_id or by_id[criterion].kind != "criterion"):
+            ese.append(f"{e.id}: subject.criterion {criterion!r} is not a criterion")
     rep.rule("spec/evaluation-subject-exists", "error", ese)
 
     # spec/superseded-by-exists — every successor resolves, and to a node of the same kind
@@ -360,6 +399,9 @@ def lint_nodes(nodes, manifest, *, manifest_problems=()) -> Report:
     ssi = [f"{f.id}: intent is not one sentence"
            for f in features if not _is_one_sentence(f.fm.get("intent", ""))]
     rep.rule("spec/single-sentence-intent", "error", ssi)
+    ssc = [f"{c.id}: statement is not one sentence"
+           for c in criteria if not _is_one_sentence(c.fm.get("statement", ""))]
+    rep.rule("spec/single-sentence-statement", "error", ssc)
     sss = [f"{e.id}: summary is not one sentence"
            for e in evaluations if not _is_one_sentence(e.fm.get("summary", ""))]
     rep.rule("spec/single-sentence-summary", "error", sss)
@@ -406,6 +448,11 @@ def lint_nodes(nodes, manifest, *, manifest_problems=()) -> Report:
             comp = t.get("component") if isinstance(t, dict) else None
             if comp in superseded_ids:
                 lets.append(f"{n.id}: touches {comp} which is superseded")
+        scope = n.fm.get("scope") or {}
+        if isinstance(scope, dict):
+            for target in [*(scope.get("components", []) or []), *(scope.get("features", []) or [])]:
+                if target in superseded_ids:
+                    lets.append(f"{n.id}: scope names {target} which is superseded")
     rep.rule("spec/live-edge-to-superseded", "warn", lets)
 
     # spec/feature-has-acceptance
@@ -423,6 +470,8 @@ def lint_nodes(nodes, manifest, *, manifest_problems=()) -> Report:
             cbc.append(f"{n.id}: core component with empty ## Why and ## Contract")
         if n.kind == "feature" and not secs.get("Behavior"):
             cbc.append(f"{n.id}: core feature with empty ## Behavior")
+        if n.kind == "criterion" and not (secs.get("Why") and secs.get("Assessment")):
+            cbc.append(f"{n.id}: core criterion requires ## Why and ## Assessment")
     rep.rule("spec/core-body-complete", "warn", cbc)
 
     # spec/decided-has-no-open-questions

@@ -1,5 +1,13 @@
 # Changelog — mfm-spec
 
+## 0.5.0 — 2026-08-03
+**MAJOR.** Hosted authoring understands MFM Spec format v0.5 criteria.
+- Keeps criterion statement, scope, and strength in the compact map.
+- Uses criteria actively during authoring to surface missing decisions, trade-offs, and
+  required conflicts before mutation.
+- Allows evaluations to assess criteria directly.
+- Starts with project metadata and policy before reading the map.
+
 ## 0.4.0 — 2026-07-20
 **MAJOR.** Every revision becomes a coherent, human-explained decision.
 - Requires `change_note` on every revision-producing tool call: a concise explanation of

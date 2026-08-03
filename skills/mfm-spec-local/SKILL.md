@@ -2,11 +2,11 @@
 name: mfm-spec-local
 description: >-
   Use when creating or evolving MFM Spec as local project files. Collaboratively
-  turn rough software intent into a typed graph of components, features, and
-  evaluation notes; design, architect, reorganize, review, trace feature/component
+  turn rough software intent into a typed graph of components, features, criteria,
+  and evaluation notes; design, architect, reorganize, review, trace design impact,
   impact, or document feedback against a spec revision. For hosted service-backed
   MFM Spec, use the mfm-spec skill instead.
-version: 0.7.0
+version: 0.8.0
 status: mvp
 public: true
 connector: null
@@ -19,7 +19,7 @@ license: MIT
 > Part of **MFM** · [mfm.dev](https://mfm.dev)
 
 The local MFM Spec skill gets a software system out of your head and into a versioned,
-agent-readable specification: a typed graph of components, features, and evaluation
+agent-readable specification: a typed graph of components, features, criteria, and evaluation
 notes. It is precise enough for an agent to slice, validate, and later derive from,
 and clear enough for a human to read and argue with.
 
@@ -45,8 +45,10 @@ Work at the MFM Spec MVP level:
   where does this responsibility live?
 - **Features** — observable behavior. A feature answers: what can an actor do or
   observe, and which component capabilities does that behavior require?
+- **Criteria** — cross-cutting design pressure. A criterion answers: what must the
+  whole design, or an explicitly scoped part, preserve, pursue, or avoid?
 - **Evaluations** — lightweight feedback/judgment notes against a feature,
-  component, revision, variant, or artifact. An evaluation records what was learned;
+  component, criterion, revision, variant, or artifact. An evaluation records what was learned;
   it does not mutate intent by itself.
 
 At this stage, do **not**:
@@ -135,6 +137,42 @@ The `touches` link has two halves: `needs` is the durable capability, while
 `component` is the current binding. "Reverse a captured charge" is a capability;
 "call RefundService" is an implementation-shaped demand and does not belong here.
 
+Criterion:
+
+```yaml
+---
+id: interactive-responsiveness
+title: Interactive responsiveness
+kind: criterion
+statement: Interactive behavior completes within its agreed responsiveness boundary.
+scope:
+  features: [browse-catalog, compare-products]
+strength: required
+status: open
+open_questions:
+  - what percentile and expected-load envelope define the target?
+---
+
+## Why
+Delay interrupts the user's interactive decision-making flow.
+
+## Guidance
+- Keep only necessary work on the interactive path.
+- Make freshness and completion expectations explicit.
+
+## Avoid
+- Do not prescribe a cache, queue, database, or framework at this spec level.
+- Do not hide latency by weakening correctness without an explicit trade-off.
+
+## Assessment
+Review the scoped feature paths and challenge each dependency whose contribution to
+the usable response is unclear.
+```
+
+A criterion applies technical pressure without selecting a technical mechanism. A
+latency target, recovery boundary, or authority limit belongs in the spec; the
+technology chosen later to pursue it does not.
+
 Evaluation:
 
 ```yaml
@@ -161,14 +199,16 @@ by itself; use it as evidence when evolving the spec.
 ```
 
 **The body is the point.** Named sections (`## Why`, `## Contract`,
-`## Behavior`, `## Acceptance`, `## Notes`, `## Rejected`, `## Decisions`) are
+`## Behavior`, `## Acceptance`, `## Guidance`, `## Avoid`, `## Assessment`,
+`## Notes`, `## Rejected`, `## Decisions`) are
 where tacit reasoning, behavior, and feedback get captured — the things normally
 lost when the conversation ends. A crisp frontmatter line with no reasoning is just
 a ticket. Push for the reasoning, not just the label.
 
 Store one file per node. Component files mirror the component tree; feature files
-live under `features/`; evaluation files live under `evaluations/`. The output
-conforms to **MFM Spec format v0.3** — the normative field set, body contract, and
+live under `features/`; criterion files live under `criteria/`; evaluation files live
+under `evaluations/`. The output
+conforms to **MFM Spec format v0.5** — the normative field set, body contract, and
 integrity rules are in `SPEC.md`.
 
 A spec has **exactly one** `mfm-spec.yaml` root manifest, at its top level. Write
@@ -177,7 +217,7 @@ already has one — never add a second. It declares the format version and names
 single root component, so the spec is self-identifying:
 
 ```yaml
-spec_format: "0.3"
+spec_format: "0.5"
 name: "<the system's name>"
 root: <id of the root component>   # the one component whose parent is null
 created: "<today, ISO date>"
@@ -218,8 +258,9 @@ catches it — but recognize it here first.
    the raw material out first.
 
 2. **Classify before shaping — commit nothing yet.** Sort the raw material into:
-   components (responsibility owners), features (observable behavior), evaluations
-   (feedback/judgment), open questions, and lower-layer details to park. Then
+   components (responsibility owners), features (observable behavior), criteria
+   (cross-cutting design pressure), evaluations (feedback/judgment), open questions,
+   and lower-layer details to park. Then
    propose the *fewest* components and features that cover what they said. Surface
    the one or two questions whose answers would move boundaries or feature
    acceptance. Write nothing yet.
@@ -236,6 +277,33 @@ catches it — but recognize it here first.
 4. **When they're happy, persist.** Only once the touched node set has settled do
    you write the local node files and run the reference linter. One settled working
    session should leave the spec directory valid.
+
+## Apply criteria actively
+
+Criteria exist to change the authoring conversation. They are not an appendix to read
+after the design is complete.
+
+At the start of a session, keep the compact criterion map in context: `id`, `statement`,
+`strength`, `scope`, `status`, and open questions. After the user's initial dump:
+
+1. Name the criteria the request appears to activate.
+2. Load the full bodies only for those criteria.
+3. Use their `Why`, `Guidance`, `Avoid`, and `Assessment` sections to interrogate the
+   request and expose missing decisions.
+4. Cite criterion ids when pushing back, so the challenge is attributable to durable
+   project intent rather than generic model taste.
+5. Before finalizing, sweep the compact criterion map again for anything missed.
+
+Report each applicable criterion as preserved, at risk, contradicted, or unclear. Do
+not silently waive one. If the user rejects or narrows a criterion, persist that change
+and its reasoning explicitly. Criteria may also conflict with each other; surface the
+trade-off instead of claiming all are satisfied.
+
+Explicit `scope` links are the known blast radius, not the complete truth. Infer likely
+missing links during authoring and propose them to the user. A criterion local to one
+feature and necessary for behavioral equivalence may belong in that feature's
+`## Acceptance` instead; create a criterion node when the pressure crosses nodes, shapes
+boundaries, or needs its own rationale and assessment rubric.
 
 ## Resist over-decomposition
 
@@ -292,7 +360,8 @@ touch — and let them confirm, or send you back for another round, before you c
 
 Always keep the whole **map** in view: every node's id, kind, status, parent, and
 edge summary (`responsibility`/`depends_on`, `intent`/`touches`, or
-`summary`/`subject`). The map is small and lets you reason about the entire system
+`statement`/`scope`/`strength`, or `summary`/`subject`). The map is small and lets
+you reason about the entire system
 at once. Load full **bodies** only for the nodes and sections you are actively
 working on.
 
@@ -311,10 +380,11 @@ and nothing important may live only in the chat. The authoritative integrity rul
 - **exactly one root** — one component has `parent: null`, and the manifest's `root`
   names it (`spec/single-root`); and **exactly one** `mfm-spec.yaml`
   (`spec/declared-format`),
-- every `parent`, `depends_on`, `touches[].component`, `superseded_by`, and checked
-  evaluation subject resolves, and component/dependency graphs are acyclic,
-- every component `responsibility`, feature `intent`, and evaluation `summary` is
-  one sentence.
+- every `parent`, `depends_on`, `touches[].component`, criterion scope reference,
+  `superseded_by`, and checked evaluation subject resolves, and
+  component/dependency graphs are acyclic,
+- every component `responsibility`, feature `intent`, criterion `statement`, and
+  evaluation `summary` is one sentence.
 
 When a reorganization renames, merges, splits, or retires a node, do not delete the
 predecessor: mark it `status: superseded`, list its successors in `superseded_by`,

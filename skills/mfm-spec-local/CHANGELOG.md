@@ -5,6 +5,18 @@ skill's behaviour or the MFM Spec format it targets; plan to re-read the skill
 after a major bump. The skill version tracks the skill itself; the MFM Spec
 Format version it targets is noted per release.
 
+## 0.8.0 — 2026-08-03
+**MAJOR.** Targets MFM Spec format **v0.5**, which makes criteria first-class spec nodes.
+- Adds `criterion` nodes for qualities, constraints, and prohibitions the whole design must
+  preserve, pursue, or avoid.
+- Adds explicit criterion scope and required/preferred strength, plus `Why`, `Guidance`,
+  `Avoid`, and `Assessment` body sections.
+- Teaches authoring to use active criteria while shaping the spec: ask for missing decisions,
+  name trade-offs, and push back on required conflicts.
+- Evaluations can now name a criterion as a subject, keeping review findings distinct from
+  the criterion they assess.
+- Adds deterministic shape, reference, body, and single-sentence lint rules for criteria.
+
 ## 0.7.0 — 2026-07-02
 **MAJOR.** Targets MFM Spec format **v0.4**, which adds node supersession —
 provenance-preserving reorganization instead of hard deletes.

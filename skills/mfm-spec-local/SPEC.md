@@ -1,7 +1,7 @@
 # MFM Spec format
 
-**Version:** 0.4
-**Status:** draft — architecture, features, evaluation notes, and node supersession
+**Version:** 0.5
+**Status:** draft — architecture, features, criteria, evaluation notes, and node supersession
 **Part of:** [MadeForMachine](https://madeformachine.com)
 
 The MFM Spec format is an agent-native specification format: a way to describe a
@@ -14,10 +14,10 @@ This document is normative. It is the contract that a MFM Spec conforms to.
 The executable counterpart is the [reference schema](#reference-schema) at the end;
 where prose and schema disagree, the schema wins.
 
-## Scope of v0.4 — architecture, features, evaluations, and supersession
+## Scope of v0.5 — architecture, features, criteria, evaluations, and supersession
 
-A MFM Spec describes a software system as a graph of **nodes**. v0.4 defines
-two durable design node kinds and one lightweight feedback node:
+A MFM Spec describes a software system as a graph of **nodes**. v0.5 defines
+three durable design node kinds and one lightweight feedback node:
 
 - **components** — the architecture layer (unchanged from v0.1): a tree of
   components, their single responsibilities, the dependencies between them, and the
@@ -25,22 +25,32 @@ two durable design node kinds and one lightweight feedback node:
 - **features** — the feature layer (new in v0.2): what the system observably does,
   each feature a path across the components it needs, with the behavior and
   acceptance that hold regardless of how the system is built.
+- **criteria** — cross-cutting design pressure (new in v0.5): what the whole design
+  or an explicitly scoped part must preserve, pursue, or avoid. Criteria guide the
+  agent during authoring and review without selecting implementation mechanisms.
 - **evaluations** — documented human or customer feedback about a revision,
   feature, component, variant, or artifact. Evaluations record verdicts and lessons;
   they do not mutate intent by themselves.
 
-The two layers are **peers, not a hierarchy.** Features are not derived from
+The durable design kinds are **peers, not a hierarchy.** Features are not derived from
 architecture, nor architecture from features; they constrain each other and
 co-evolve. A feature is a path *across* the component tree — it cannot be a property
 of any one component — which is precisely why it is its own kind of node, linked to
 components rather than nested under one.
 
-v0.4 adds no new node kind. It adds **supersession** to the node lifecycle: a
+A criterion is cross-cutting for the same reason. It may apply to the whole system or
+name particular components and features, but it is not owned by any one of them. The
+agent uses its reasoning and assessment rubric to interrogate proposed changes, surface
+conflicts, and remind the user of durable constraints. Satisfaction requires judgment
+and is deliberately not a lint rule.
+
+v0.4 added **supersession** to the node lifecycle: a
 `superseded` status and a `superseded_by` edge, so a reorganization — a rename, a
 merge, a split, a retire — preserves the predecessor's provenance in the graph instead
 of hard-deleting it (see [Node lifecycle and supersession](#node-lifecycle-and-supersession)).
+v0.5 adds the `criterion` node kind and lets evaluations name criteria as subjects.
 
-v0.4 deliberately does **not** describe:
+v0.5 deliberately does **not** describe:
 
 - technologies, frameworks, or libraries,
 - UI/UX layouts or flows,
@@ -52,8 +62,8 @@ Keeping the spec narrow is what keeps it small, portable across technology choic
 and cheap to throw a new idea at. The version number is a promise that the format
 grows downward over time — not that it is finished.
 
-**Earlier specs remain valid.** v0.4 is additive: v0.1 component-only, v0.2
-component+feature, and v0.3 component+feature+evaluation specs remain valid, and the
+**Earlier specs remain valid.** v0.5 is additive: v0.1 component-only, v0.2
+component+feature, v0.3 component+feature+evaluation, and v0.4 supersession specs remain valid, and the
 existing rules are unchanged. A spec declares the version it was written against;
 tools support the versions they understand.
 
@@ -69,6 +79,8 @@ my-system/
     <child-component>.md
   features/               # feature files live here
     <feature>.md
+  criteria/               # criterion files live here
+    <criterion>.md
   evaluations/            # feedback/evaluation notes live here
     <evaluation>.md
 ```
@@ -82,6 +94,9 @@ my-system/
 - **Features live under `features/`.** A feature crosses the component tree, so it
   does not nest within it. Features may be grouped (an epic and its features) via the
   `parent` field, but their directory placement is not load-bearing.
+- **Criteria live under `criteria/`.** Criteria are flat, cross-cutting nodes. Their
+  structured `scope` carries explicit component/feature links; `scope.system: true`
+  applies a criterion to the design as a whole.
 - **Evaluations live under `evaluations/`.** They are feedback records, not part of
   the component tree and not feature epics. Their `subject` field carries what they
   evaluate.
@@ -93,21 +108,21 @@ self-identifying: a tool can read one file and know the format version and entry
 point before parsing any node.
 
 ```yaml
-spec_format: "0.4"        # the MFM Spec format version this spec conforms to
+spec_format: "0.5"        # the MFM Spec format version this spec conforms to
 name: "Acme"              # human name of the system being specified
 root: ingestion           # id of the root component (the node whose parent is null)
 created: 2026-06-18       # ISO date the spec was started
-invariants:               # system-wide properties that are no single node's job
+invariants:               # deprecated shorthand; prefer criterion nodes
   - every inbound item is routed exactly once
 ```
 
 | field         | type            | required | notes                                              |
 |---------------|-----------------|----------|----------------------------------------------------|
-| `spec_format` | string          | yes      | exact format version, e.g. `"0.4"`                 |
+| `spec_format` | string          | yes      | exact format version, e.g. `"0.5"`                 |
 | `name`        | string          | yes      | the system's human name                            |
 | `root`        | component id    | yes      | must match the `id` of the single root component   |
 | `created`     | ISO date        | no       | when the spec was started                          |
-| `invariants`  | list of strings | no       | system-wide properties that aren't owned by one node |
+| `invariants`  | list of strings | no       | deprecated v0.1-v0.4 shorthand; use criterion nodes for new properties |
 
 ## A node file
 
@@ -123,7 +138,7 @@ judgment lives in the frontmatter; everything that needs judgment stays in named
 prose.** A field earns a place in the frontmatter only when a deterministic check
 needs it. This is what keeps a node concise and keeps the validator honest.
 
-Every node carries a `kind`. v0.4 defines `component`, `feature`, and
+Every node carries a `kind`. v0.5 defines `component`, `feature`, `criterion`, and
 `evaluation`; future layers (`ux`, `stack`, `plan`) will add kinds without
 disturbing these.
 
@@ -238,6 +253,62 @@ satisfy. Detecting it requires judgment ("does *reverse a charge* fall under
 [Integrity and lint rules](#integrity-and-lint-rules)). An unresolved mismatch is
 parked as an `open_question`, like any other tension.
 
+### A criterion file
+
+A criterion states what the whole design, or an explicitly scoped part of it, must
+preserve, pursue, or avoid. It is durable product intent rather than an implementation
+choice. A latency target belongs here; a cache, queue, framework, or database selected
+to pursue it does not.
+
+#### Frontmatter
+
+```yaml
+---
+id: interactive-responsiveness
+title: Interactive responsiveness
+kind: criterion
+statement: Interactive behavior completes within its agreed responsiveness boundary.
+scope:
+  features: [browse-catalog, compare-products]
+strength: required
+status: open
+open_questions:
+  - what percentile and expected-load envelope define the target?
+---
+```
+
+| field            | type                                | required | default | notes |
+|------------------|-------------------------------------|----------|---------|-------|
+| `id`             | string                              | yes      | —       | stable, lowercase, hyphenated; unique across the spec |
+| `title`          | string                              | yes      | —       | human-readable name |
+| `kind`           | `criterion`                         | yes      | —       | the node kind discriminator |
+| `statement`      | string                              | yes      | —       | **exactly one sentence** — what the design preserves, pursues, or avoids |
+| `scope`          | `{system?, components?, features?}` | yes      | —       | selects the whole design or explicit component/feature ids |
+| `strength`       | `required` \| `preferred`            | yes      | —       | required criteria demand resolution; preferred criteria exert directional pressure |
+| `status`         | design-node status                  | yes      | —       | `draft`, `open`, `decided`, or `superseded` |
+| `superseded_by`  | list of criterion ids               | no       | `[]`    | successor criteria of a superseded criterion |
+| `open_questions` | list of strings                     | no       | `[]`    | unresolved scope, target, trade-off, or interpretation questions |
+
+`scope` is deliberately small. v0.5 supports the whole system and explicit node ids,
+not tag selectors or a graph query language. Explicit links make the known blast radius
+retrievable; the agent must still notice and discuss missing links.
+
+#### Body
+
+| section         | required    | purpose |
+|-----------------|-------------|---------|
+| `## Why`        | recommended | why this pressure matters to users, the business, or system integrity |
+| `## Guidance`   | optional    | design-level preferences that help the agent shape and challenge the spec |
+| `## Avoid`      | optional    | failure modes and design moves that work against the criterion |
+| `## Assessment` | recommended | the questions and evidence the agent uses when reviewing the spec |
+| `## Decisions`  | optional    | resolved scope, targets, conflicts, and accepted trade-offs |
+
+Criteria are active authoring material, not an appendix. At session start an agent keeps
+their compact map in context, loads full bodies only for the criteria affected by the
+current change, cites criterion ids when pushing back, and sweeps the compact map again
+before finalizing. It never silently waives a criterion; a waiver changes the criterion
+or records an explicit evaluation/decision.
+
 ### Node lifecycle and supersession
 
 A node's `id` is its identity. When a reorganization changes that identity — a rename,
@@ -259,7 +330,7 @@ superseded_by: [resolution-lifecycle]
   the responsibility is gone, not relocated.
 
 `superseded_by` connects nodes of the **same kind** (component→component,
-feature→feature), and only a `superseded` node may carry it — both checked by lint.
+feature→feature, criterion→criterion), and only a `superseded` node may carry it — both checked by lint.
 Evaluations are never superseded; they are historical records, not design nodes.
 
 A superseded node stays in the graph as provenance, but it is retired from the live
@@ -296,7 +367,17 @@ Features:
 | `## Rejected`    | optional    | alternative behaviors considered and why they lose                   |
 | `## Decisions`   | optional    | resolved `open_questions`: the choice and why                        |
 
-A `core` node with a crisp `responsibility`/`intent` but an empty body is a ticket,
+Criteria:
+
+| section         | required    | purpose |
+|-----------------|-------------|---------|
+| `## Why`        | recommended | why the design pressure matters |
+| `## Guidance`   | optional    | what the agent should tend to preserve or prefer |
+| `## Avoid`      | optional    | design failure modes to challenge |
+| `## Assessment` | recommended | how to interrogate and review the spec against the criterion |
+| `## Decisions`  | optional    | resolved scope, targets, conflicts, and accepted trade-offs |
+
+A `core` node with a crisp `responsibility`/`intent`/`statement` but an empty body is a ticket,
 not a spec node. It records *what* without preserving *why the system is shaped this
 way*. Tools should warn (see `spec/core-body-complete`).
 
@@ -374,14 +455,15 @@ rejects:
 | `promotes_to_spec` | list of strings                           | no       | `[]`    | lessons that should affect the spec        |
 | `rejects`          | list of strings                           | no       | `[]`    | ideas, variants, or behaviors ruled out    |
 
-`subject` must name at least one thing being evaluated. `feature` and `component`
+`subject` must name at least one thing being evaluated. `feature`, `component`, and `criterion`
 references are checked when present; `rev`, `variant`, and `artifact` are labels the
-tool records but does not resolve in v0.4.
+tool records but does not resolve in v0.5.
 
 ```yaml
 subject:
   feature: refund
   component: payment
+  criterion: safe-repetition
   rev: "abc123"
   variant: fastapi-postgres
   artifact: demo-build-2026-06-29
@@ -420,12 +502,15 @@ and a hosted store enforce the same thing. `error` means the spec is invalid;
 | `spec/depends-on-acyclic` | error | the `depends_on` graph is a DAG |
 | `spec/touches-exists` | error | every `touches[].component` resolves to a component |
 | `spec/feature-touches-nonempty` | error | every feature touches at least one component |
+| `spec/criterion-shape` | error | every criterion has a non-empty scope and `required` or `preferred` strength |
+| `spec/criterion-scope-exists` | error | every scoped component/feature reference resolves to the right node kind |
 | `spec/evaluation-shape` | error | every evaluation has a non-empty `subject` and a valid `verdict` |
-| `spec/evaluation-subject-exists` | error | every `subject.feature` / `subject.component` reference resolves to the right node kind |
+| `spec/evaluation-subject-exists` | error | every `subject.feature` / `subject.component` / `subject.criterion` reference resolves to the right node kind |
 | `spec/superseded-by-exists` | error | every `superseded_by` target resolves to a node of the same kind |
 | `spec/superseded-shape` | error | only a node with `status: superseded` carries `superseded_by` |
 | `spec/single-sentence-responsibility` | error | `responsibility` is one sentence |
 | `spec/single-sentence-intent` | error | `intent` is one sentence |
+| `spec/single-sentence-statement` | error | criterion `statement` is one sentence |
 | `spec/single-sentence-summary` | error | evaluation `summary` is one sentence |
 | `spec/distinct-responsibilities` | warn | no two **live** components declare the same `responsibility` (a superseded node keeps its responsibility as provenance) |
 | `spec/component-untouched` | warn | a live **leaf** component no feature touches — a missing feature, or over-architecture; grouping parents and superseded components are exempt |
@@ -434,13 +519,14 @@ and a hosted store enforce the same thing. `error` means the spec is invalid;
 | `spec/core-body-complete` | warn | a `core` node has a non-empty `## Why`/`## Contract` (or `## Behavior` for features) |
 | `spec/decided-has-no-open-questions` | warn | a node marked `decided` carries no `open_questions` |
 
-Reserved for v0.4: `spec/variant-invariance` — fields marked invariant agree across
+Reserved for a later version: `spec/variant-invariance` — fields marked invariant agree across
 implementation variants.
 
 Validity is structural, not aesthetic. It says the graph hangs together; it does not
 say the architecture is good. **Semantic checks are deliberately not lint rules** —
 whether a feature's `needs` is satisfied by a component's responsibility, whether two
-features contradict, whether a feature's coordination is owned by some component — all
+features or criteria contradict, whether a criterion is satisfied, whether a feature's
+coordination is owned by some component — all
 require judgment and are the agent's job. Drawing that line is what keeps this layer
 deterministic.
 
@@ -452,14 +538,15 @@ The format version is declared per spec in `mfm-spec.yaml`, not per file.
   versions while the format finds its shape. Specs declare the version they were
   written against so tools can migrate or reject them.
 - **The format grows downward, additively.** 0.2 added the feature layer as a new
-  node kind, 0.3 added evaluations as lightweight feedback records, and 0.4 added
-  supersession to the node lifecycle, without disturbing the architecture layer.
+  node kind, 0.3 added evaluations as lightweight feedback records, 0.4 added
+  supersession to the node lifecycle, and 0.5 added criteria as active cross-cutting
+  authoring guidance, without disturbing the architecture layer.
   Future versions are expected to add a UI/UX layer, a technology-binding layer, and
   a data-shape layer the same way. A spec written against an earlier version stays
   valid.
 - **A version is a promise about scope, not a claim of completeness.** Calling this
-  0.4 says plainly: this describes architecture, features, evaluation notes, and how
-  nodes are retired, and nothing below them, today.
+  0.5 says plainly: this describes architecture, features, criteria, evaluation notes,
+  and how nodes are retired, and nothing below them, today.
 
 ## Reference schema
 
@@ -467,12 +554,12 @@ The normative, executable form of the frontmatter and root manifest is the pair 
 JSON Schema files alongside this document:
 
 - [`mfm-spec.schema.json`](mfm-spec.schema.json) — a single node's frontmatter (`oneOf`
-  component / feature / evaluation)
+  component / feature / criterion / evaluation)
 - [`mfm-spec-manifest.schema.json`](mfm-spec-manifest.schema.json) — the `mfm-spec.yaml` manifest
 
 JSON Schema validates *shape* only — types, required fields, enums, reference format.
-Cross-spec integrity (uniqueness, reference existence, single root, acyclicity, the
-feature/component link) is enforced by the [lint rules](#integrity-and-lint-rules)
+Cross-spec integrity (uniqueness, reference existence, single root, acyclicity, and
+feature/criterion links) is enforced by the [lint rules](#integrity-and-lint-rules)
 over the full graph, not by the per-node schema. Where prose and schema disagree, the
 schema wins.
 
@@ -511,9 +598,10 @@ class Touch(BaseModel):
 
 
 class EvaluationSubject(BaseModel):
-    """What an evaluation is about. feature/component refs are checked by lint."""
+    """What an evaluation is about. design-node refs are checked by lint."""
     feature: str | None = None
     component: str | None = None
+    criterion: str | None = None
     rev: str | None = None
     variant: str | None = None
     artifact: str | None = None
@@ -553,6 +641,27 @@ class Feature(BaseModel):
     status: Status = Status.draft
     touches: list[Touch] = Field(min_length=1)
     superseded_by: list[str] = Field(default_factory=list)  # successors of a superseded node
+    open_questions: list[str] = Field(default_factory=list)
+
+
+class CriterionScope(BaseModel):
+    """The whole design or explicit nodes a criterion is known to affect."""
+    system: bool | None = None
+    components: list[str] = Field(default_factory=list)
+    features: list[str] = Field(default_factory=list)
+
+
+class Criterion(BaseModel):
+    """Cross-cutting design pressure used during authoring and review."""
+    id: str
+    title: str
+    kind: Literal["criterion"] = "criterion"
+    statement: str                 # exactly one sentence
+    scope: CriterionScope
+    strength: Literal["required", "preferred"]
+    tier: Tier = Tier.core
+    status: Status
+    superseded_by: list[str] = Field(default_factory=list)
     open_questions: list[str] = Field(default_factory=list)
 
 

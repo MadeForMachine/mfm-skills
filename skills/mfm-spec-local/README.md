@@ -38,7 +38,7 @@ persists, in a format made to be read by both an agent and a human.
 
 ## Scope: the MVP spec graph, and nothing below it
 
-MFM Spec works at the MVP spec level: components, features, and evaluation notes.
+MFM Spec works at the MVP spec level: components, features, criteria, and evaluation notes.
 It deliberately does **not** choose technologies or frameworks, design UI layouts,
 create data schemas, produce implementation plans, or generate code. Those are lower
 layers. Keeping this level free of them is what keeps a spec small, portable across

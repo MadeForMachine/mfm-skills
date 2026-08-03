@@ -42,6 +42,20 @@ def evaluation(id_, *, subject="feature: feat", summary="The trial taught one th
     )
 
 
+def criterion(
+    id_,
+    *,
+    statement="The whole design preserves one important property.",
+    scope="system: true",
+    strength="required",
+):
+    return parse_node(
+        f"---\nid: {id_}\ntitle: {id_}\nkind: criterion\n"
+        f"statement: {statement}\nscope:\n  {scope}\nstrength: {strength}\nstatus: open\n"
+        "---\n\n## Why\nIt matters.\n\n## Assessment\nReview the whole design.\n"
+    )
+
+
 def test_parse_node_skips_non_nodes():
     assert parse_node("# just prose\n\nno frontmatter") is None
     assert parse_node("---\ntitle: x\n---\nbody") is None  # no id
@@ -108,8 +122,17 @@ def test_summary_shape_separates_severities():
 
 
 def test_evaluation_subject_refs_existing_nodes():
-    rep = lint_nodes([node("root", None), feature("feat"), evaluation("eval")], MANIFEST)
+    rep = lint_nodes(
+        [node("root", None), feature("feat"), criterion("quality"), evaluation("eval")],
+        MANIFEST,
+    )
     assert "spec/evaluation-subject-exists" not in errors(rep)
+
+    criterion_eval = lint_nodes(
+        [node("root", None), criterion("quality"), evaluation("eval", subject="criterion: quality")],
+        MANIFEST,
+    )
+    assert "spec/evaluation-subject-exists" not in errors(criterion_eval)
 
     bad = lint_nodes([node("root", None), evaluation("eval", subject="feature: missing")], MANIFEST)
     assert "spec/evaluation-subject-exists" in errors(bad)
@@ -129,6 +152,28 @@ def test_multi_sentence_evaluation_summary_is_an_error():
         MANIFEST,
     )
     assert "spec/single-sentence-summary" in errors(rep)
+
+
+def test_criterion_shape_and_scope_are_checked():
+    clean = lint_nodes(
+        [node("root", None), feature("feat"), criterion("quality", scope="features: [feat]")],
+        MANIFEST,
+    )
+    assert not clean.has_errors(), clean.summary()
+
+    malformed = criterion("quality", statement="First. Second.", scope="components: [missing]", strength="maybe")
+    malformed.fm["scope"] = {"system": False, "components": ["missing"]}
+    broken = errors(lint_nodes([node("root", None), malformed], MANIFEST))
+    assert "spec/criterion-shape" in broken
+    assert "spec/criterion-scope-exists" in broken
+    assert "spec/single-sentence-statement" in broken
+
+
+def test_criterion_requires_reason_and_assessment_for_body_completeness():
+    bare = criterion("quality")
+    bare.body = "\n## Why\nIt matters.\n"
+    rep = lint_nodes([node("root", None), bare], MANIFEST)
+    assert "spec/core-body-complete" in warnings(rep)
 
 
 def warnings(rep):
