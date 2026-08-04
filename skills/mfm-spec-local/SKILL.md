@@ -6,7 +6,7 @@ description: >-
   and evaluation notes; design, architect, reorganize, review, trace design impact,
   impact, or document feedback against a spec revision. For hosted service-backed
   MFM Spec, use the mfm-spec skill instead.
-version: 0.8.0
+version: 0.8.1
 status: mvp
 public: true
 connector: null
@@ -241,7 +241,8 @@ whose `parent` is `null`.
 - **If one exists, you are *extending* it.** Read the existing manifest and map
   first. New components attach under an existing component; new features live as
   feature nodes (`parent: null` unless grouped under another feature); evaluations
-  live as evaluation nodes with a `subject`. Do **not** write a second
+  live as evaluation nodes with a `subject`; criteria live as flat criterion nodes under
+  `criteria/` with explicit scope. Do **not** write a second
   `mfm-spec.yaml`, and do **not** introduce a second component with `parent: null`.
   A spec has exactly one root component.
 - **If none exists, you are *creating* a new spec.** Proceed below; you will write

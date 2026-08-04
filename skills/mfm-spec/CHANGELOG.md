@@ -1,5 +1,15 @@
 # Changelog — mfm-spec
 
+## 0.5.1 — 2026-08-04
+- Makes the agent/service authority split explicit: the customer's agent owns generative and
+  semantic judgment; MadeForMachine provides deterministic memory, projection, validation, and
+  admission.
+- Treats `mfm_spec_project` policy as authoritative session context and policy failures as design
+  feedback that must be resolved before mutation.
+- Includes criterion scopes in referrer/blast-radius tracing.
+- Clarifies that applied criterion collections become ordinary portable criterion nodes rather
+  than live catalog references.
+
 ## 0.5.0 — 2026-08-03
 **MAJOR.** Hosted authoring understands MFM Spec format v0.5 criteria.
 - Keeps criterion statement, scope, and strength in the compact map.

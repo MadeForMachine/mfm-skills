@@ -5,6 +5,10 @@ skill's behaviour or the MFM Spec format it targets; plan to re-read the skill
 after a major bump. The skill version tracks the skill itself; the MFM Spec
 Format version it targets is noted per release.
 
+## 0.8.1 — 2026-08-04
+- Fixes the extension workflow to place new criteria under `criteria/` with explicit scope.
+- Refreshes the README to describe the full v0.5 graph and current format version.
+
 ## 0.8.0 — 2026-08-03
 **MAJOR.** Targets MFM Spec format **v0.5**, which makes criteria first-class spec nodes.
 - Adds `criterion` nodes for qualities, constraints, and prohibitions the whole design must

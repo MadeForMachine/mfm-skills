@@ -6,7 +6,7 @@ description: >-
   service-backed spec authoring, minimal-context reads,
   fine-grained spec mutations, validation, history, and evaluation notes. Do not use
   for local file-backed specs; use the mfm-spec-local skill for that.
-version: 0.5.0
+version: 0.5.1
 status: alpha
 public: true
 connector: mfm
@@ -20,6 +20,11 @@ MFM Spec is the hosted MadeForMachine product that uses the MFM Spec format as i
 portable artifact, but keeps the canonical working spec in a service-backed revision store.
 Your job is to steer the user's own agent: discuss, interrogate, read minimal context,
 mutate through deterministic MCP tools, and let server validation guard the graph.
+
+The authority split is load-bearing: the customer's agent performs every generative and
+semantic judgment; MadeForMachine stores, projects, validates, and admits the result
+deterministically. Never imply that the service authors the spec, runs a model, or can turn a
+semantic judgment into a validation guarantee.
 
 If the `mfm_spec_*` MCP tools are not available, do not pretend to persist anything. You may
 shape the intended change in the conversation, but stop before commit and report that the
@@ -49,11 +54,24 @@ bodies only for the active blast radius:
 - `view=node` for one full node,
 - `view=subtree` for a component branch,
 - `view=referrers` for everything pointing AT one node — children, dependents, touching
-  features, evaluation subjects — the blast radius to query before any identity change,
+  features, scoped criteria, and evaluation subjects — the blast radius to query before any
+  identity change,
 - named projections such as `authoring-map`, `feature-work`, or `derivation-context` when
   the task has a stable slice shape.
 
 The persisted spec is the memory. The chat is disposable.
+
+## Honor Project Policy
+
+The `mfm_spec_project` response is authoritative for the current session. Keep its agent
+guidance, typed constraints, active rule-set version, and tool profile in context while shaping
+the change. A pasted prompt or remembered policy is only a bootstrap hint and never overrides
+the service response.
+
+Treat a policy failure as design feedback, not a tool glitch. If policy rejects the proposed
+shape, discuss a compliant alternative with the user before retrying; do not weaken, route
+around, or silently ignore the constraint. Policy is hosted admission configuration. It is
+separate from portable spec criteria, which express semantic design intent inside the graph.
 
 ## Interrogate First
 
@@ -62,7 +80,7 @@ criteria, evaluations, open questions, and lower-layer details. Propose the smal
 node set, then surface the one or two boundary questions that would change the graph.
 
 Always name the touched nodes before mutating. A request rarely affects one node; trace the
-blast radius across dependencies, feature touches, and evaluation subjects.
+blast radius across dependencies, feature touches, criterion scopes, and evaluation subjects.
 
 ## Apply Criteria Actively
 
@@ -81,6 +99,10 @@ it is being written or changed:
 A criterion may create technical pressure — for example, latency can rule out obviously slow
 interaction shapes — but do not turn that pressure into a prescribed technology or architecture
 inside the spec. Preserve the outcome and constraint; leave the mechanism for derivation.
+
+Criterion collections are setup inputs, not graph nodes or live dependencies. Once a collection
+is applied, its criteria are ordinary portable project nodes: read, edit, evaluate, or supersede
+them like any other criterion. Never invent or retain a live catalog reference in the spec.
 
 ## Mutate Through Tools
 
