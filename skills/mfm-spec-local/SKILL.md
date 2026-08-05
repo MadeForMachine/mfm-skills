@@ -6,7 +6,7 @@ description: >-
   and evaluation notes; design, architect, reorganize, review, trace design impact,
   impact, or document feedback against a spec revision. For hosted service-backed
   MFM Spec, use the mfm-spec skill instead.
-version: 0.8.1
+version: 0.8.2
 status: mvp
 public: true
 connector: null

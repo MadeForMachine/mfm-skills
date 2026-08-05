@@ -1,0 +1,15 @@
+interface:
+  display_name: "MFM Spec"
+  short_description: "Author hosted MFM Specs through MCP"
+  default_prompt: "Use $mfm-spec to evolve this project's hosted MFM Spec."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "mfm"
+      description: "MadeForMachine's hosted MFM Spec tools"
+      transport: "streamable_http"
+      url: "https://mcp.mfm.dev/mcp"
+
+policy:
+  allow_implicit_invocation: true

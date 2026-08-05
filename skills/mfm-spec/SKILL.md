@@ -6,7 +6,7 @@ description: >-
   service-backed spec authoring, minimal-context reads,
   fine-grained spec mutations, validation, history, and evaluation notes. Do not use
   for local file-backed specs; use the mfm-spec-local skill for that.
-version: 0.5.1
+version: 0.5.2
 status: alpha
 public: true
 connector: mfm

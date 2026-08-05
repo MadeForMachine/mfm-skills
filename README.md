@@ -17,6 +17,8 @@ One folder per skill under `skills/`. Each is self-contained:
 skills/
   <name>/
     SKILL.md       # manifest frontmatter (see skill.schema.json) + the skill body
+    agents/
+      openai.yaml  # Codex UI name, invocation policy, and MCP dependencies
     CHANGELOG.md   # notable changes; entries marked MAJOR need a re-read
     …              # any assets the skill bundles (examples, scripts, reference linter)
 skill.schema.json  # the frontmatter contract the page generator reads

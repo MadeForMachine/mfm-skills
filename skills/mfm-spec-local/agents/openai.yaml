@@ -1,0 +1,7 @@
+interface:
+  display_name: "MFM Spec Local"
+  short_description: "Author MFM Specs in local project files"
+  default_prompt: "Use $mfm-spec-local to evolve the MFM Spec stored in this project."
+
+policy:
+  allow_implicit_invocation: true

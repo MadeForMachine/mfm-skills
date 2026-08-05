@@ -1,5 +1,11 @@
 # Changelog — mfm-spec
 
+## 0.5.2 — 2026-08-05
+- Adds Codex UI metadata with the canonical display name **MFM Spec**.
+- Declares the hosted `mfm` MCP dependency so compatible harnesses can surface the required
+  connector alongside the skill.
+- Keeps implicit invocation enabled while preserving `mfm-spec` as the stable skill id.
+
 ## 0.5.1 — 2026-08-04
 - Makes the agent/service authority split explicit: the customer's agent owns generative and
   semantic judgment; MadeForMachine provides deterministic memory, projection, validation, and

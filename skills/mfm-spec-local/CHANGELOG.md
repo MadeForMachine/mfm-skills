@@ -5,6 +5,10 @@ skill's behaviour or the MFM Spec format it targets; plan to re-read the skill
 after a major bump. The skill version tracks the skill itself; the MFM Spec
 Format version it targets is noted per release.
 
+## 0.8.2 — 2026-08-05
+- Adds Codex UI metadata with the canonical display name **MFM Spec Local**.
+- Keeps implicit invocation enabled while preserving `mfm-spec-local` as the stable skill id.
+
 ## 0.8.1 — 2026-08-04
 - Fixes the extension workflow to place new criteria under `criteria/` with explicit scope.
 - Refreshes the README to describe the full v0.5 graph and current format version.
