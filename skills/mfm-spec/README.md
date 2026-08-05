@@ -36,6 +36,10 @@ Then configure the MCP server at `https://mcp.mfm.dev/mcp` in your agent and com
 OAuth for the `mfm` server. If the `mfm_spec_*` tools are not visible after login,
 start a fresh agent session so the tool list is refreshed.
 
+If a later MFM call reports `Auth required`, the agent should initiate reauthentication rather
+than asking the user to run a command. In Codex it runs `codex mcp login mfm`, waits for the user
+to approve the browser request, and retries the tool.
+
 ## Status
 
 Alpha and public for pilot setup. The hosted service is still hardening, but the skill

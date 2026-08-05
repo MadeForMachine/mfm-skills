@@ -1,5 +1,11 @@
 # Changelog — mfm-spec
 
+## 0.5.3 — 2026-08-05
+- Requires the agent to trigger MCP reauthentication itself when an MFM tool reports an OAuth
+  failure; Codex runs `codex mcp login mfm` and opens browser confirmation for the user.
+- Retries the MFM tool after login, using a fresh agent session only when the current transport
+  retains its pre-login state.
+
 ## 0.5.2 — 2026-08-05
 - Adds Codex UI metadata with the canonical display name **MFM Spec**.
 - Declares the hosted `mfm` MCP dependency so compatible harnesses can surface the required

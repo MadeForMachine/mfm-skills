@@ -6,7 +6,7 @@ description: >-
   service-backed spec authoring, minimal-context reads,
   fine-grained spec mutations, validation, history, and evaluation notes. Do not use
   for local file-backed specs; use the mfm-spec-local skill for that.
-version: 0.5.2
+version: 0.5.3
 status: alpha
 public: true
 connector: mfm
@@ -29,6 +29,15 @@ semantic judgment into a validation guarantee.
 If the `mfm_spec_*` MCP tools are not available, do not pretend to persist anything. You may
 shape the intended change in the conversation, but stop before commit and report that the
 MFM Spec connector/tooling is missing.
+
+## Recover Authentication
+
+If an MFM tool reports `Auth required` or another OAuth failure, trigger the client's MCP
+reauthentication flow yourself instead of handing that action to the user. In Codex, run
+`codex mcp login mfm`; it opens the confirmation request in the user's browser. Wait for the
+login command to complete, then retry the MFM tool. If the current tool transport still holds
+its pre-login state, retry from a fresh agent session. The user's role is to approve the browser
+request, not to discover or execute the recovery command.
 
 ## Scope
 
