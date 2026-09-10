@@ -1,0 +1,7 @@
+interface:
+  display_name: "MFM Data Model Local"
+  short_description: "Develop logical data models in local files"
+  default_prompt: "Use $mfm-data-model-local to develop this project's data model from its specification."
+
+policy:
+  allow_implicit_invocation: true
