@@ -6,7 +6,7 @@ import pytest
 import yaml
 from pydantic import ValidationError
 
-from model import DataModel, UniqueKeyLoader
+from .model import DataModel, UniqueKeyLoader
 
 
 @pytest.fixture
