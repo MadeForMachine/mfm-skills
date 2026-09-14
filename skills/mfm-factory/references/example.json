@@ -1,0 +1,43 @@
+{
+  "data_model": {
+    "format": "mfm-data-model/1",
+    "concepts": [
+      {
+        "id": "order",
+        "definition": "A customer's request to purchase goods.",
+        "spec_refs": ["place-order"],
+        "attributes": [
+          {"id": "id", "meaning": "Stable order identity", "type": "identifier"},
+          {"id": "state", "meaning": "Order lifecycle state", "type": "text", "rules": ["pending or confirmed"]}
+        ],
+        "identity": ["id"],
+        "relationships": [],
+        "lifecycle": "Created pending; becomes confirmed after acceptance.",
+        "invariants": [{"id": "order-id-stable", "statement": "The order id remains unchanged through confirmation."}]
+      }
+    ],
+    "questions": []
+  },
+  "architecture": {
+    "format": "mfm-architecture/1",
+    "stack": {"frontend": "Next.js (pin in project)", "api": "FastAPI (pin in project)", "database": "PostgreSQL (pin in project)"},
+    "components": [
+      {"id": "shop", "parent": null, "responsibility": "Let customers place orders", "spec_refs": ["place-order"], "model_refs": ["order"]},
+      {"id": "web", "parent": "shop", "responsibility": "Collect an order and display confirmation", "spec_refs": ["place-order"], "model_refs": ["order"], "technology": "Next.js"},
+      {"id": "orders", "parent": "shop", "responsibility": "Accept orders and retain their state", "spec_refs": ["place-order"], "model_refs": ["order"], "technology": "FastAPI", "allowed_effects": ["Store orders through its owned persistence adapter"]}
+    ],
+    "contracts": [
+      {"id": "order-payload", "description": "Small example payload shared by both sides", "schema": {"$schema": "https://json-schema.org/draft/2020-12/schema", "type": "object", "required": ["id", "state"], "additionalProperties": false, "properties": {"id": {"type": "string", "minLength": 1}, "state": {"enum": ["pending", "confirmed"]}}}}
+    ],
+    "interfaces": [
+      {"id": "web-place-order", "component": "web", "role": "required", "kind": "request-response", "input": "order-payload", "output": "order-payload", "behavior": "Send a pending order; display the returned confirmed order."},
+      {"id": "orders-place", "component": "orders", "role": "provided", "kind": "request-response", "input": "order-payload", "output": "order-payload", "behavior": "Accept pending order, retain confirmed state and return the same id."}
+    ],
+    "connections": [{"id": "place-request", "source": "web-place-order", "target": "orders-place", "transport": "http", "behavior": "POST the order; return the stored confirmation."}],
+    "mappings": [{"id": "order-identity-mapping", "model_ref": "order-id-stable", "targets": ["orders", "order-payload"], "representation": "Use the same id in the API response and orders table; retain it during state changes."}],
+    "ownership": [{"component": "web", "repository": "shop", "path": "web/"}, {"component": "orders", "repository": "shop", "path": "api/"}],
+    "obligations": [{"id": "identity-check", "component": "shop", "kind": "composition", "check": "Assert that the confirmation and stored state retain the submitted order id."}],
+    "scenarios": [{"id": "confirm-order", "spec_refs": ["place-order"], "setup": "Empty store and synthetic pending order order-1.", "steps": [{"connection": "place-request", "action": "Submit order-1 in pending state.", "expect": "A confirmed response with id order-1; store contains that same confirmation."}], "outcome": "The user sees confirmation of the order retained by the service."}],
+    "questions": ["This teaching slice omits failures, repeated requests and persistence ports. Complete the project's actual graph and scenario scope before constructing it."]
+  }
+}

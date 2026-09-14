@@ -36,6 +36,7 @@ twin — so the pages can't drift from the skill.
 | [`mfm-spec-local`](skills/mfm-spec-local/) | Interrogates a system's architecture out of your head into local MFM Spec files. | mvp |
 | [`mfm-data-model-local`](skills/mfm-data-model-local/) | Develops logical data meaning from a specification in local files; experimental, excluded from generated distribution. | alpha |
 | [`mfm-spec`](skills/mfm-spec/) | Steers hosted, service-backed MFM Spec authoring through MCP. | alpha |
+| [`mfm-factory`](skills/mfm-factory/) | One MCP workflow for design variants, executable mocks and construction feedback; includes starting data/architecture formats. Excluded from generated distribution pending hosted Factory support. | alpha |
 | [`atlas`](skills/atlas/) | Steers your agent to query MadeForMachine Atlas (the product/feature discovery-and-comparison engine) — jump to doc evidence instead of crawling provider docs. | beta |
 
 Internal / operator-scoped skills (e.g. the Atlas harvest tooling) are **not** in

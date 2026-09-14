@@ -1,0 +1,216 @@
+{
+  "$defs": {
+    "Attribute": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "meaning": {
+          "minLength": 1,
+          "title": "Meaning",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "text",
+            "identifier",
+            "integer",
+            "decimal",
+            "boolean",
+            "date",
+            "datetime",
+            "bytes"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "cardinality": {
+          "default": "one",
+          "enum": [
+            "one",
+            "zero-or-one",
+            "many",
+            "one-or-more"
+          ],
+          "title": "Cardinality",
+          "type": "string"
+        },
+        "rules": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Rules",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "meaning",
+        "type"
+      ],
+      "title": "Attribute",
+      "type": "object"
+    },
+    "Concept": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "definition": {
+          "minLength": 1,
+          "title": "Definition",
+          "type": "string"
+        },
+        "spec_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "title": "Spec Refs",
+          "type": "array"
+        },
+        "attributes": {
+          "items": {
+            "$ref": "#/$defs/Attribute"
+          },
+          "title": "Attributes",
+          "type": "array"
+        },
+        "identity": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Identity",
+          "type": "array"
+        },
+        "relationships": {
+          "items": {
+            "$ref": "#/$defs/Relationship"
+          },
+          "title": "Relationships",
+          "type": "array"
+        },
+        "lifecycle": {
+          "minLength": 1,
+          "title": "Lifecycle",
+          "type": "string"
+        },
+        "invariants": {
+          "items": {
+            "$ref": "#/$defs/Invariant"
+          },
+          "title": "Invariants",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "definition",
+        "spec_refs",
+        "attributes",
+        "identity",
+        "lifecycle"
+      ],
+      "title": "Concept",
+      "type": "object"
+    },
+    "Invariant": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "statement": {
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "statement"
+      ],
+      "title": "Invariant",
+      "type": "object"
+    },
+    "Relationship": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "target": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Target",
+          "type": "string"
+        },
+        "cardinality": {
+          "enum": [
+            "one",
+            "zero-or-one",
+            "many",
+            "one-or-more"
+          ],
+          "title": "Cardinality",
+          "type": "string"
+        },
+        "meaning": {
+          "minLength": 1,
+          "title": "Meaning",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "target",
+        "cardinality",
+        "meaning"
+      ],
+      "title": "Relationship",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "mfm-data-model/1",
+      "title": "Format",
+      "type": "string"
+    },
+    "concepts": {
+      "items": {
+        "$ref": "#/$defs/Concept"
+      },
+      "title": "Concepts",
+      "type": "array"
+    },
+    "questions": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Questions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "format",
+    "concepts"
+  ],
+  "title": "DataModel",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

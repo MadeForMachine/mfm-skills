@@ -1,0 +1,510 @@
+{
+  "$defs": {
+    "Component": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "parent": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Parent"
+        },
+        "responsibility": {
+          "minLength": 1,
+          "title": "Responsibility",
+          "type": "string"
+        },
+        "spec_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "title": "Spec Refs",
+          "type": "array"
+        },
+        "model_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "title": "Model Refs",
+          "type": "array"
+        },
+        "technology": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Technology"
+        },
+        "deployment": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deployment"
+        },
+        "allowed_effects": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Allowed Effects",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "parent",
+        "responsibility",
+        "spec_refs",
+        "model_refs"
+      ],
+      "title": "Component",
+      "type": "object"
+    },
+    "Connection": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "source": {
+          "description": "Required interface id; event source is the publishing requirement",
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Source",
+          "type": "string"
+        },
+        "target": {
+          "description": "Provided interface id; event target is the receiving handler",
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Target",
+          "type": "string"
+        },
+        "transport": {
+          "enum": [
+            "in-process",
+            "http",
+            "event",
+            "sql"
+          ],
+          "title": "Transport",
+          "type": "string"
+        },
+        "behavior": {
+          "minLength": 1,
+          "title": "Behavior",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "source",
+        "target",
+        "transport",
+        "behavior"
+      ],
+      "title": "Connection",
+      "type": "object"
+    },
+    "Contract": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "schema": {
+          "additionalProperties": true,
+          "description": "JSON Schema Draft 2020-12 payload contract",
+          "title": "Schema",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "schema"
+      ],
+      "title": "Contract",
+      "type": "object"
+    },
+    "Interface": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "component": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Component",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "provided",
+            "required"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "request-response",
+            "event",
+            "data-access"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "input": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Input",
+          "type": "string"
+        },
+        "output": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output"
+        },
+        "errors": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "title": "Errors",
+          "type": "array"
+        },
+        "behavior": {
+          "minLength": 1,
+          "title": "Behavior",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "component",
+        "role",
+        "kind",
+        "input",
+        "behavior"
+      ],
+      "title": "Interface",
+      "type": "object"
+    },
+    "Mapping": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "model_ref": {
+          "description": "Concept or invariant id in the selected Data Model",
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Model Ref",
+          "type": "string"
+        },
+        "targets": {
+          "description": "Component, interface or contract ids",
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Targets",
+          "type": "array"
+        },
+        "representation": {
+          "minLength": 1,
+          "title": "Representation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "model_ref",
+        "targets",
+        "representation"
+      ],
+      "title": "Mapping",
+      "type": "object"
+    },
+    "Obligation": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "component": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Component",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "contract",
+            "component",
+            "composition",
+            "operational"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "check": {
+          "minLength": 1,
+          "title": "Check",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "component",
+        "kind",
+        "check"
+      ],
+      "title": "Obligation",
+      "type": "object"
+    },
+    "Ownership": {
+      "additionalProperties": false,
+      "properties": {
+        "component": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Component",
+          "type": "string"
+        },
+        "repository": {
+          "minLength": 1,
+          "title": "Repository",
+          "type": "string"
+        },
+        "path": {
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "component",
+        "repository",
+        "path"
+      ],
+      "title": "Ownership",
+      "type": "object"
+    },
+    "Scenario": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "spec_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "title": "Spec Refs",
+          "type": "array"
+        },
+        "setup": {
+          "minLength": 1,
+          "title": "Setup",
+          "type": "string"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/Step"
+          },
+          "minItems": 1,
+          "title": "Steps",
+          "type": "array"
+        },
+        "outcome": {
+          "minLength": 1,
+          "title": "Outcome",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "spec_refs",
+        "setup",
+        "steps",
+        "outcome"
+      ],
+      "title": "Scenario",
+      "type": "object"
+    },
+    "Step": {
+      "additionalProperties": false,
+      "properties": {
+        "connection": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Connection",
+          "type": "string"
+        },
+        "action": {
+          "minLength": 1,
+          "title": "Action",
+          "type": "string"
+        },
+        "expect": {
+          "minLength": 1,
+          "title": "Expect",
+          "type": "string"
+        }
+      },
+      "required": [
+        "connection",
+        "action",
+        "expect"
+      ],
+      "title": "Step",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "mfm-architecture/1",
+      "title": "Format",
+      "type": "string"
+    },
+    "stack": {
+      "additionalProperties": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "description": "Chosen technologies and pinned versions; no universal profile registry",
+      "title": "Stack",
+      "type": "object"
+    },
+    "components": {
+      "items": {
+        "$ref": "#/$defs/Component"
+      },
+      "minItems": 1,
+      "title": "Components",
+      "type": "array"
+    },
+    "contracts": {
+      "items": {
+        "$ref": "#/$defs/Contract"
+      },
+      "title": "Contracts",
+      "type": "array"
+    },
+    "interfaces": {
+      "items": {
+        "$ref": "#/$defs/Interface"
+      },
+      "title": "Interfaces",
+      "type": "array"
+    },
+    "connections": {
+      "items": {
+        "$ref": "#/$defs/Connection"
+      },
+      "title": "Connections",
+      "type": "array"
+    },
+    "mappings": {
+      "items": {
+        "$ref": "#/$defs/Mapping"
+      },
+      "title": "Mappings",
+      "type": "array"
+    },
+    "ownership": {
+      "items": {
+        "$ref": "#/$defs/Ownership"
+      },
+      "title": "Ownership",
+      "type": "array"
+    },
+    "obligations": {
+      "items": {
+        "$ref": "#/$defs/Obligation"
+      },
+      "title": "Obligations",
+      "type": "array"
+    },
+    "scenarios": {
+      "items": {
+        "$ref": "#/$defs/Scenario"
+      },
+      "title": "Scenarios",
+      "type": "array"
+    },
+    "questions": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Questions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "format",
+    "stack",
+    "components",
+    "contracts",
+    "interfaces",
+    "connections",
+    "mappings",
+    "ownership",
+    "obligations",
+    "scenarios"
+  ],
+  "title": "Architecture",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

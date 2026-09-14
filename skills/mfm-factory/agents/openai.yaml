@@ -1,0 +1,15 @@
+interface:
+  display_name: "MFM Factory"
+  short_description: "Design and construct Factory projects through MCP"
+  default_prompt: "Use $mfm-factory to resume this project's design and construction through MCP."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "mfm"
+      description: "MadeForMachine hosted Spec and Factory tools"
+      transport: "streamable_http"
+      url: "https://mcp.mfm.dev/mcp"
+
+policy:
+  allow_implicit_invocation: true
