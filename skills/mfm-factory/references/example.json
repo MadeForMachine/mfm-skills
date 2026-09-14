@@ -35,7 +35,7 @@
     ],
     "connections": [{"id": "place-request", "source": "web-place-order", "target": "orders-place", "transport": "http", "behavior": "POST the order; return the stored confirmation."}],
     "mappings": [{"id": "order-identity-mapping", "model_ref": "order-id-stable", "targets": ["orders", "order-payload"], "representation": "Use the same id in the API response and orders table; retain it during state changes."}],
-    "ownership": [{"component": "web", "repository": "shop", "path": "web/"}, {"component": "orders", "repository": "shop", "path": "api/"}],
+    "ownership": [{"component": "web", "repository": "shop", "path": "web"}, {"component": "orders", "repository": "shop", "path": "api"}],
     "obligations": [{"id": "identity-check", "component": "shop", "kind": "composition", "check": "Assert that the confirmation and stored state retain the submitted order id."}],
     "scenarios": [{"id": "confirm-order", "spec_refs": ["place-order"], "setup": "Empty store and synthetic pending order order-1.", "steps": [{"connection": "place-request", "action": "Submit order-1 in pending state.", "expect": "A confirmed response with id order-1; store contains that same confirmation."}], "outcome": "The user sees confirmation of the order retained by the service."}],
     "questions": ["This teaching slice omits failures, repeated requests and persistence ports. Complete the project's actual graph and scenario scope before constructing it."]

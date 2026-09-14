@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from formats import Architecture, DataModel
+from .formats import Architecture, DataModel
 
 
 @pytest.fixture

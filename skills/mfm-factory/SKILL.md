@@ -5,11 +5,11 @@ description: >-
   itself: maintain hosted specs, logical data models and architecture variants,
   then construct an executable mock and replace it with verified implementation
   through MCP-recorded work. Use for construction feedback and resuming these projects.
-version: 1.0.0
+version: 1.1.0
 status: alpha
 public: false
 connector: mfm
-requires: [mfm_spec_project, mfm_spec_read, mfm_spec_validate, mfm_spec_mutate, mfm_spec_rename, mfm_spec_merge, mfm_spec_split, mfm_spec_retire, mfm_spec_history, mfm_spec_import, mfm_spec_export, mfm_factory_project, mfm_factory_schema, mfm_factory_read, mfm_factory_graph, mfm_factory_mutate, mfm_factory_context, mfm_factory_history, mfm_factory_changes]
+requires: [mfm_spec_project, mfm_spec_read, mfm_spec_validate, mfm_spec_mutate, mfm_spec_rename, mfm_spec_merge, mfm_spec_split, mfm_spec_retire, mfm_spec_history, mfm_spec_import, mfm_spec_export, mfm_factory_schema, mfm_factory_v2_project, mfm_factory_v2_graph, mfm_factory_v2_mutate, mfm_factory_read, mfm_factory_mutate, mfm_factory_history, mfm_factory_changes]
 license: MIT
 ---
 
@@ -34,7 +34,7 @@ Use the customer's ordinary development tools for code, fixtures and tests, and
 record their exact inputs, work and evidence through MCP. This workflow also applies
 when the project being constructed is the Factory itself.
 
-Read [MCP operations and current limitations](mcp.md) before making a tool call.
+Read [MCP operations and deployment boundaries](mcp.md) before making a tool call.
 If required tools or commands are absent, report the specific missing capability.
 Continue independent supported work, but do not simulate success, edit the database,
 call HTTP endpoints instead of MCP, or silently use a local design as authority.
@@ -42,8 +42,9 @@ This skill's selected formats and workflow do not imply that a deployment suppor
 
 For an existing project, read project policy, the current spec map and Factory
 project/run records. Resume recorded tasks and exact inputs before creating work.
-For a new project, use the advertised MCP creation operation with the user's chosen
-name. If none exists, report that creation needs MCP support; do not invent a command.
+For a new project, bootstrap its hosted spec using `mfm_spec_import`, bind the Factory
+project, and create its named spec variant as described in [MCP operations](mcp.md).
+Check deployment capabilities first; do not invent a command if support is missing.
 An explicitly authorized first spec import is a bootstrap, never an overwrite of
 an existing hosted project. Read its policy and HEAD before subsequent authoring.
 When the user explicitly authorizes reconciling local authoring into an existing
