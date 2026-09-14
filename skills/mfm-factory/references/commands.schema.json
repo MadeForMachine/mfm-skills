@@ -1,0 +1,1621 @@
+{
+  "$defs": {
+    "Architecture": {
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "const": "mfm-architecture/1",
+          "title": "Format",
+          "type": "string"
+        },
+        "stack": {
+          "additionalProperties": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": "Chosen technologies and pinned versions; no universal profile registry",
+          "title": "Stack",
+          "type": "object"
+        },
+        "components": {
+          "items": {
+            "$ref": "#/$defs/Component"
+          },
+          "minItems": 1,
+          "title": "Components",
+          "type": "array"
+        },
+        "contracts": {
+          "items": {
+            "$ref": "#/$defs/Contract"
+          },
+          "title": "Contracts",
+          "type": "array"
+        },
+        "interfaces": {
+          "items": {
+            "$ref": "#/$defs/Interface"
+          },
+          "title": "Interfaces",
+          "type": "array"
+        },
+        "connections": {
+          "items": {
+            "$ref": "#/$defs/Connection"
+          },
+          "title": "Connections",
+          "type": "array"
+        },
+        "mappings": {
+          "items": {
+            "$ref": "#/$defs/Mapping"
+          },
+          "title": "Mappings",
+          "type": "array"
+        },
+        "ownership": {
+          "items": {
+            "$ref": "#/$defs/Ownership"
+          },
+          "title": "Ownership",
+          "type": "array"
+        },
+        "obligations": {
+          "items": {
+            "$ref": "#/$defs/Obligation"
+          },
+          "title": "Obligations",
+          "type": "array"
+        },
+        "scenarios": {
+          "items": {
+            "$ref": "#/$defs/Scenario"
+          },
+          "title": "Scenarios",
+          "type": "array"
+        },
+        "questions": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Questions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "format",
+        "stack",
+        "components",
+        "contracts",
+        "interfaces",
+        "connections",
+        "mappings",
+        "ownership",
+        "obligations",
+        "scenarios"
+      ],
+      "title": "Architecture",
+      "type": "object"
+    },
+    "Attribute": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "meaning": {
+          "minLength": 1,
+          "title": "Meaning",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "text",
+            "identifier",
+            "integer",
+            "decimal",
+            "boolean",
+            "date",
+            "datetime",
+            "bytes"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "cardinality": {
+          "default": "one",
+          "enum": [
+            "one",
+            "zero-or-one",
+            "many",
+            "one-or-more"
+          ],
+          "title": "Cardinality",
+          "type": "string"
+        },
+        "rules": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Rules",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "meaning",
+        "type"
+      ],
+      "title": "Attribute",
+      "type": "object"
+    },
+    "CompleteMock": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "complete_mock",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "results": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Results",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "results"
+      ],
+      "title": "CompleteMock",
+      "type": "object"
+    },
+    "Component": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "parent": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Parent"
+        },
+        "responsibility": {
+          "minLength": 1,
+          "title": "Responsibility",
+          "type": "string"
+        },
+        "spec_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "title": "Spec Refs",
+          "type": "array"
+        },
+        "model_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "title": "Model Refs",
+          "type": "array"
+        },
+        "technology": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Technology"
+        },
+        "deployment": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deployment"
+        },
+        "allowed_effects": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Allowed Effects",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "parent",
+        "responsibility",
+        "spec_refs",
+        "model_refs"
+      ],
+      "title": "Component",
+      "type": "object"
+    },
+    "ComponentProgress": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "record_component_progress",
+          "title": "Type",
+          "type": "string"
+        },
+        "run_id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "component": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Component",
+          "type": "string"
+        },
+        "implementation": {
+          "enum": [
+            "mocked",
+            "partial",
+            "implemented"
+          ],
+          "title": "Implementation",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "run_id",
+        "component",
+        "implementation",
+        "evidence"
+      ],
+      "title": "ComponentProgress",
+      "type": "object"
+    },
+    "Concept": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "definition": {
+          "minLength": 1,
+          "title": "Definition",
+          "type": "string"
+        },
+        "spec_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "title": "Spec Refs",
+          "type": "array"
+        },
+        "attributes": {
+          "items": {
+            "$ref": "#/$defs/Attribute"
+          },
+          "title": "Attributes",
+          "type": "array"
+        },
+        "identity": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Identity",
+          "type": "array"
+        },
+        "relationships": {
+          "items": {
+            "$ref": "#/$defs/Relationship"
+          },
+          "title": "Relationships",
+          "type": "array"
+        },
+        "lifecycle": {
+          "minLength": 1,
+          "title": "Lifecycle",
+          "type": "string"
+        },
+        "invariants": {
+          "items": {
+            "$ref": "#/$defs/Invariant"
+          },
+          "title": "Invariants",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "definition",
+        "spec_refs",
+        "attributes",
+        "identity",
+        "lifecycle"
+      ],
+      "title": "Concept",
+      "type": "object"
+    },
+    "Connection": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "source": {
+          "description": "Required interface id; event source is the publishing requirement",
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Source",
+          "type": "string"
+        },
+        "target": {
+          "description": "Provided interface id; event target is the receiving handler",
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Target",
+          "type": "string"
+        },
+        "transport": {
+          "enum": [
+            "in-process",
+            "http",
+            "event",
+            "sql"
+          ],
+          "title": "Transport",
+          "type": "string"
+        },
+        "behavior": {
+          "minLength": 1,
+          "title": "Behavior",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "source",
+        "target",
+        "transport",
+        "behavior"
+      ],
+      "title": "Connection",
+      "type": "object"
+    },
+    "Contract": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "schema": {
+          "additionalProperties": true,
+          "description": "JSON Schema Draft 2020-12 payload contract",
+          "title": "Schema",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "schema"
+      ],
+      "title": "Contract",
+      "type": "object"
+    },
+    "CreateArchitectureVariant": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "create_architecture_variant",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "spec_variant": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Spec Variant",
+          "type": "string"
+        },
+        "copied_from": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Copied From"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "name",
+        "spec_variant"
+      ],
+      "title": "CreateArchitectureVariant",
+      "type": "object"
+    },
+    "CreateSpecVariant": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "create_spec_variant",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "spec_project_slug": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Spec Project Slug",
+          "type": "string"
+        },
+        "copied_from": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Copied From"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "name",
+        "spec_project_slug"
+      ],
+      "title": "CreateSpecVariant",
+      "type": "object"
+    },
+    "CreateWork": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "create_work",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "run_id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "component": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Component",
+          "type": "string"
+        },
+        "task_kind": {
+          "enum": [
+            "prepare",
+            "implement",
+            "integrate",
+            "refactor",
+            "retire",
+            "investigate"
+          ],
+          "title": "Task Kind",
+          "type": "string"
+        },
+        "instructions": {
+          "minLength": 1,
+          "title": "Instructions",
+          "type": "string"
+        },
+        "allowed_changes": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Allowed Changes",
+          "type": "array"
+        },
+        "obligations": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Obligations",
+          "type": "array"
+        },
+        "origin_work": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Origin Work"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "run_id",
+        "component",
+        "task_kind",
+        "instructions",
+        "allowed_changes",
+        "obligations"
+      ],
+      "title": "CreateWork",
+      "type": "object"
+    },
+    "DataModel": {
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "const": "mfm-data-model/1",
+          "title": "Format",
+          "type": "string"
+        },
+        "concepts": {
+          "items": {
+            "$ref": "#/$defs/Concept"
+          },
+          "title": "Concepts",
+          "type": "array"
+        },
+        "questions": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Questions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "format",
+        "concepts"
+      ],
+      "title": "DataModel",
+      "type": "object"
+    },
+    "Exchange": {
+      "additionalProperties": false,
+      "properties": {
+        "connection": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Connection",
+          "type": "string"
+        },
+        "observation": {
+          "minLength": 1,
+          "title": "Observation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "connection",
+        "observation"
+      ],
+      "title": "Exchange",
+      "type": "object"
+    },
+    "Finding": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "report_finding",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "run_id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "component": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Component",
+          "type": "string"
+        },
+        "layer": {
+          "enum": [
+            "spec",
+            "model",
+            "architecture",
+            "implementation"
+          ],
+          "title": "Layer",
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "requested_change": {
+          "minLength": 1,
+          "title": "Requested Change",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "run_id",
+        "component",
+        "layer",
+        "description",
+        "requested_change",
+        "evidence"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "FinishConstruction": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "finish_construction",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "accepted",
+            "abandoned"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "results": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "title": "Results",
+          "type": "array"
+        },
+        "decision": {
+          "minLength": 1,
+          "title": "Decision",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "outcome",
+        "results",
+        "decision",
+        "evidence"
+      ],
+      "title": "FinishConstruction",
+      "type": "object"
+    },
+    "FinishWork": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "finish_work",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "succeeded",
+            "blocked",
+            "cancelled"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "outcome",
+        "evidence"
+      ],
+      "title": "FinishWork",
+      "type": "object"
+    },
+    "Interface": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "component": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Component",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "provided",
+            "required"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "request-response",
+            "event",
+            "data-access"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "input": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Input",
+          "type": "string"
+        },
+        "output": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output"
+        },
+        "errors": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "title": "Errors",
+          "type": "array"
+        },
+        "behavior": {
+          "minLength": 1,
+          "title": "Behavior",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "component",
+        "role",
+        "kind",
+        "input",
+        "behavior"
+      ],
+      "title": "Interface",
+      "type": "object"
+    },
+    "Invariant": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "statement": {
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "statement"
+      ],
+      "title": "Invariant",
+      "type": "object"
+    },
+    "Mapping": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "model_ref": {
+          "description": "Concept or invariant id in the selected Data Model",
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Model Ref",
+          "type": "string"
+        },
+        "targets": {
+          "description": "Component, interface or contract ids",
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Targets",
+          "type": "array"
+        },
+        "representation": {
+          "minLength": 1,
+          "title": "Representation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "model_ref",
+        "targets",
+        "representation"
+      ],
+      "title": "Mapping",
+      "type": "object"
+    },
+    "Obligation": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "component": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Component",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "contract",
+            "component",
+            "composition",
+            "operational"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "check": {
+          "minLength": 1,
+          "title": "Check",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "component",
+        "kind",
+        "check"
+      ],
+      "title": "Obligation",
+      "type": "object"
+    },
+    "Ownership": {
+      "additionalProperties": false,
+      "properties": {
+        "component": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Component",
+          "type": "string"
+        },
+        "repository": {
+          "minLength": 1,
+          "title": "Repository",
+          "type": "string"
+        },
+        "path": {
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "component",
+        "repository",
+        "path"
+      ],
+      "title": "Ownership",
+      "type": "object"
+    },
+    "Relationship": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "target": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Target",
+          "type": "string"
+        },
+        "cardinality": {
+          "enum": [
+            "one",
+            "zero-or-one",
+            "many",
+            "one-or-more"
+          ],
+          "title": "Cardinality",
+          "type": "string"
+        },
+        "meaning": {
+          "minLength": 1,
+          "title": "Meaning",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "target",
+        "cardinality",
+        "meaning"
+      ],
+      "title": "Relationship",
+      "type": "object"
+    },
+    "RenameVariant": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "rename_variant",
+          "title": "Type",
+          "type": "string"
+        },
+        "layer": {
+          "enum": [
+            "spec",
+            "architecture"
+          ],
+          "title": "Layer",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "layer",
+        "id",
+        "name"
+      ],
+      "title": "RenameVariant",
+      "type": "object"
+    },
+    "ResolveFinding": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "resolve_finding",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "resolution": {
+          "minLength": 1,
+          "title": "Resolution",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "successor": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Successor"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "resolution",
+        "evidence"
+      ],
+      "title": "ResolveFinding",
+      "type": "object"
+    },
+    "SaveArchitecture": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "save_architecture",
+          "title": "Type",
+          "type": "string"
+        },
+        "architecture_variant": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Architecture Variant",
+          "type": "string"
+        },
+        "spec_revision": {
+          "minimum": 1,
+          "title": "Spec Revision",
+          "type": "integer"
+        },
+        "model_revision": {
+          "minimum": 1,
+          "title": "Model Revision",
+          "type": "integer"
+        },
+        "content": {
+          "$ref": "#/$defs/Architecture"
+        }
+      },
+      "required": [
+        "type",
+        "architecture_variant",
+        "spec_revision",
+        "model_revision",
+        "content"
+      ],
+      "title": "SaveArchitecture",
+      "type": "object"
+    },
+    "SaveModel": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "save_model",
+          "title": "Type",
+          "type": "string"
+        },
+        "spec_variant": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Spec Variant",
+          "type": "string"
+        },
+        "spec_revision": {
+          "minimum": 1,
+          "title": "Spec Revision",
+          "type": "integer"
+        },
+        "content": {
+          "$ref": "#/$defs/DataModel"
+        }
+      },
+      "required": [
+        "type",
+        "spec_variant",
+        "spec_revision",
+        "content"
+      ],
+      "title": "SaveModel",
+      "type": "object"
+    },
+    "Scenario": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "spec_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "title": "Spec Refs",
+          "type": "array"
+        },
+        "setup": {
+          "minLength": 1,
+          "title": "Setup",
+          "type": "string"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/Step"
+          },
+          "minItems": 1,
+          "title": "Steps",
+          "type": "array"
+        },
+        "outcome": {
+          "minLength": 1,
+          "title": "Outcome",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "spec_refs",
+        "setup",
+        "steps",
+        "outcome"
+      ],
+      "title": "Scenario",
+      "type": "object"
+    },
+    "ScenarioResult": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "record_scenario",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "run_id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "scenario": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Scenario",
+          "type": "string"
+        },
+        "phase": {
+          "enum": [
+            "mock",
+            "implementation"
+          ],
+          "title": "Phase",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "passed",
+            "failed"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "code_evidence": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Code Evidence",
+          "type": "string"
+        },
+        "data_evidence": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Data Evidence",
+          "type": "string"
+        },
+        "trace_evidence": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Trace Evidence",
+          "type": "string"
+        },
+        "exchanges": {
+          "items": {
+            "$ref": "#/$defs/Exchange"
+          },
+          "minItems": 1,
+          "title": "Exchanges",
+          "type": "array"
+        },
+        "observations": {
+          "minLength": 1,
+          "title": "Observations",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "run_id",
+        "scenario",
+        "phase",
+        "outcome",
+        "code_evidence",
+        "data_evidence",
+        "trace_evidence",
+        "exchanges",
+        "observations"
+      ],
+      "title": "ScenarioResult",
+      "type": "object"
+    },
+    "StartConstruction": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "start_construction",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "spec_variant": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Spec Variant",
+          "type": "string"
+        },
+        "architecture_variant": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Architecture Variant",
+          "type": "string"
+        },
+        "spec_revision": {
+          "minimum": 1,
+          "title": "Spec Revision",
+          "type": "integer"
+        },
+        "model_revision": {
+          "minimum": 1,
+          "title": "Model Revision",
+          "type": "integer"
+        },
+        "architecture_revision": {
+          "minimum": 1,
+          "title": "Architecture Revision",
+          "type": "integer"
+        },
+        "scenarios": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Scenarios",
+          "type": "array"
+        },
+        "predecessor": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Predecessor"
+        },
+        "assessment": {
+          "minLength": 1,
+          "title": "Assessment",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "spec_variant",
+        "architecture_variant",
+        "spec_revision",
+        "model_revision",
+        "architecture_revision",
+        "scenarios",
+        "assessment"
+      ],
+      "title": "StartConstruction",
+      "type": "object"
+    },
+    "Step": {
+      "additionalProperties": false,
+      "properties": {
+        "connection": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Connection",
+          "type": "string"
+        },
+        "action": {
+          "minLength": 1,
+          "title": "Action",
+          "type": "string"
+        },
+        "expect": {
+          "minLength": 1,
+          "title": "Expect",
+          "type": "string"
+        }
+      },
+      "required": [
+        "connection",
+        "action",
+        "expect"
+      ],
+      "title": "Step",
+      "type": "object"
+    },
+    "SyncSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "sync_spec_variant",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "source_revision": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Source Revision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "source_revision"
+      ],
+      "title": "SyncSpec",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "project_slug": {
+      "pattern": "^[a-z][a-z0-9_.-]*$",
+      "title": "Project Slug",
+      "type": "string"
+    },
+    "idempotency_key": {
+      "pattern": "^[a-z][a-z0-9_.-]*$",
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "expected_version": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Expected Version",
+      "type": "integer"
+    },
+    "reason": {
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "causes": {
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 100,
+      "title": "Causes",
+      "type": "array"
+    },
+    "command": {
+      "discriminator": {
+        "mapping": {
+          "complete_mock": "#/$defs/CompleteMock",
+          "create_architecture_variant": "#/$defs/CreateArchitectureVariant",
+          "create_spec_variant": "#/$defs/CreateSpecVariant",
+          "create_work": "#/$defs/CreateWork",
+          "finish_construction": "#/$defs/FinishConstruction",
+          "finish_work": "#/$defs/FinishWork",
+          "record_component_progress": "#/$defs/ComponentProgress",
+          "record_scenario": "#/$defs/ScenarioResult",
+          "rename_variant": "#/$defs/RenameVariant",
+          "report_finding": "#/$defs/Finding",
+          "resolve_finding": "#/$defs/ResolveFinding",
+          "save_architecture": "#/$defs/SaveArchitecture",
+          "save_model": "#/$defs/SaveModel",
+          "start_construction": "#/$defs/StartConstruction",
+          "sync_spec_variant": "#/$defs/SyncSpec"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/CreateSpecVariant"
+        },
+        {
+          "$ref": "#/$defs/CreateArchitectureVariant"
+        },
+        {
+          "$ref": "#/$defs/RenameVariant"
+        },
+        {
+          "$ref": "#/$defs/SyncSpec"
+        },
+        {
+          "$ref": "#/$defs/SaveModel"
+        },
+        {
+          "$ref": "#/$defs/SaveArchitecture"
+        },
+        {
+          "$ref": "#/$defs/StartConstruction"
+        },
+        {
+          "$ref": "#/$defs/ScenarioResult"
+        },
+        {
+          "$ref": "#/$defs/CompleteMock"
+        },
+        {
+          "$ref": "#/$defs/ComponentProgress"
+        },
+        {
+          "$ref": "#/$defs/CreateWork"
+        },
+        {
+          "$ref": "#/$defs/FinishWork"
+        },
+        {
+          "$ref": "#/$defs/Finding"
+        },
+        {
+          "$ref": "#/$defs/ResolveFinding"
+        },
+        {
+          "$ref": "#/$defs/FinishConstruction"
+        }
+      ],
+      "title": "Command"
+    }
+  },
+  "required": [
+    "project_slug",
+    "idempotency_key",
+    "reason",
+    "command"
+  ],
+  "title": "Envelope",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}
