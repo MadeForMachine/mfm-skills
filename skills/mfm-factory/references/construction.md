@@ -1,66 +1,97 @@
-# Executable mock and feedback loop
+# Pull construction and evidence
 
-## Establish the run
+Discover the deployed schema first. Current construction uses `/v3/factory` and
+separate mock and product runs. `/v2` retains earlier combined-phase runs as history;
+never use `complete_mock` to claim the new separate mock acceptance.
 
-Read the selected spec, Data Model and architecture at exact revisions. Confirm the
-user's variant choices, record known gaps and establish the product scenarios to
-exercise. A scenario is a flow with setup, interactions and expected outcome; include
-important negative, empty, failure and recovery paths. “Complete flow” means end to
-end for this stated scope, not all possible paths through the graph.
+## Exact inputs and assignments
 
-Retain the actual input tuple in construction records. An unchanged model or
-architecture may have older authoring provenance; the agent assesses whether it is
-suitable for the selected inputs. That assessment is a judgment, not a certificate.
+Select the user's spec and architecture variants. Read the exact spec/model/architecture
+and assess contradictions, incomplete contracts and scenario coverage. No semantic
+certificate is required. `start_run` pins those revisions and `deliverable: mock` or
+`product`. Product construction must explicitly adopt an accepted mock. A paused
+predecessor keeps its successor paused until user resolution explicitly adopts it.
 
-## First milestone: executable mock product
+The initial plan names every architecture component exactly once with bounded instructions,
+explicit sibling order and whether permitted child-contract preparation is needed.
+The current trial architecture requires every direct child for integration. Designs that
+need different dependency semantics must state and implement that choice before construction.
+Every trial system has a declared verification obligation. Starting a run does not authorize
+changing settled contracts, the ownership tree or logical meaning.
 
-Build the component boundaries, interfaces and wiring that the architecture declares.
-Use lightweight mock behavior behind those boundaries and simulate external systems
-through their declared adapters. A screen populated with independent canned responses
-does not demonstrate data flowing between components.
+## One fresh invocation per claim
 
-Generate synthetic **scenario data** consistent with logical identity, relationships,
-invariants and lifecycle. Reuse coherent IDs across interfaces. State changes must
-affect subsequent reads and interactions. Record fixture artifacts or a generator
-with its version, seed and other required inputs so the same scenario can be replayed.
-Keep generated instances with construction evidence, not inside the logical schema.
+Call `claim_next_work` for the run. It atomically returns one eligible assignment with
+an opaque token, generation, expiry and bounded context. It may instead return an explicit
+no-work reason: paused/accepted, active claims, waiting children, recovery required or blocked.
+Do not infer completion from no eligible work. The client chooses its parallelism and starts
+workers; Factory never launches agents, requires a broker or keeps a server supervisor.
 
-Execute the agreed scenarios through the actual wiring. Check payload contracts,
-expected interactions and final state. Retain an **execution trace** identifying
-scenario, run, fixture/generator version, component/interface connections, observations
-and outcomes. Tie results to exact code and design revisions. Explain coverage gaps.
-The mock milestone is met when required scenarios pass in this scope, with evidence;
-the service does not infer it from declarations alone.
+Each invocation owns exactly one system. Use its exact state version, assignment,
+pinned inputs, boundaries, permitted changes, obligations, scenario data and complete
+direct-child state/result/issue snapshot. Do not copy a parent conversation or all
+descendant history. Additional `lookup_context` calls record exact revision provenance;
+reading newer material does not adopt it or expand writable scope.
 
-## Replace mock behavior
+A preparation worker only supplies bounded direct-child instructions within the architecture's
+explicit freedoms and reports `prepared`. Sufficient designs skip preparation and enable
+eligible leaves immediately. Preparation does not accept the parent. Leaf workers construct
+their own executable behavior. Fresh parent workers integrate exact required child result IDs.
+Parents do not change child internals or progress.
 
-Treat the mock as the initial implementation of the same product. Replace behavior
-within a component's boundary while retaining its interface contracts and scenario
-checks. Track mocked, partially implemented or implemented behavior separately from
-task completion and acceptance. A completed mock task can still describe mocked behavior.
+Submit `report_system` with the claim ID, token, generation, `expected_version` from its
+context, stable report/retry IDs, requested transition and concise reasoning summary/evidence.
+Reports can deliver results with exact artifact identities, child results and passing declared
+checks; report a blocker; propose/escalate a named issue; or record interruption. Report,
+admitted state, results/issues, ledger, audit and retry receipt commit together.
 
-Run component checks and the affected end-to-end scenarios after each replacement.
-Parent components own integration within their scope. Include real persistence,
-external integrations and operational checks before claiming production completion.
-Do not perform actual external transactions simply because a mock scenario covers them;
-honor the user's authorization and the environment's test arrangements.
+**End the invocation after reporting.** Delegation, blockers and repairs needing child action
+always lead to a fresh worker. A parent never remains waiting with its prior context. Claim
+expiry marks execution uncertain, not failed or successful. Set `recover_expired: true` only
+when deliberately recovering that uncertainty; a fresh generation fences the old attempt.
+No exactly-once external execution is promised; inspect filesystem/side effects on recovery.
 
-## Correct the design when construction teaches us something
+## Feedback and design pauses
 
-1. Record the finding, affected exact inputs, evidence and resolution responsibility.
-2. Correct intent in Spec, meaning in Data Model, or implementation structure/contracts
-   in Architecture through MCP. The same authorized agent may perform these roles.
-3. Traverse references from changed concepts/components/interfaces to dependent work,
-   mappings, scenario data and checks. Document necessary edits and retained choices.
-4. Adopt revised inputs explicitly in successor construction work. Reuse code and
-   evidence only after assessing their continuing relevance; never rewrite old evidence.
-5. Rebuild the affected mock paths or implementation, then rerun checks and record results.
+Every issue keeps its origin, route, decisions and evidence. Parent resolution sees all
+unresolved direct-child issues, including several blocked siblings. It may resolve actionable
+feedback while other siblings work. Each action names the issue version in the claim snapshot;
+newly arriving feedback stays pending. Proposed repair is not resolution: fresh affected-system
+workers verify it, then fresh parent workers verify required composition.
 
-For a removed or replaced component, identify callers, connections, owned files,
-persistent data, migration needs and obligations that move or disappear. Retire the
-design identity with history intact. Deleting a graph node does not complete the
-corresponding code/data removal. Avoid forcing every architecture edit into a new
-component identity when its responsibility is unchanged.
+Construction-local issues escalate one parent edge per report. A spec/model/architecture flaw
+immediately pauses the whole run. `route_design_issue` records one explanation/escalation edge
+while paused, without a construction claim or progress. New claims cannot execute; late reports
+can retain evidence without advancing progress. The harness stops active workers safely and
+records interruption; Factory cannot halt external processes.
 
-On interruption, resume from durable tasks, pinned inputs and last verified results.
-An abandoned agent session is not evidence that its task failed or succeeded.
+Surface the actionable issue, evidence and required decision to the user. Only their explicit
+resolution with a design agent permits `resolve_design_pause`. Explain every direct-parent
+step before root resolution. Resume unchanged inputs only after reassessment; changed inputs
+use an explicit successor. Publishing a design revision alone never resumes work.
+
+## Executable mock and separate acceptance
+
+Build executable components and actual wiring, with external systems replaced at their
+explicit adapter boundaries. Generate coherent synthetic instances and retain generator/seed,
+code identity and actual input/output traces. Static screens or independent canned responses
+are insufficient. Validate payloads and important success, failure, empty and recovery paths.
+
+`record_scenario` records exact run scope, ordered connection observations and retained code,
+data and trace evidence. `accept_run` requires all selected scenarios to pass, current verified
+component compositions, no unresolved issues and no active/unrecovered attempts. It accepts
+only that run's deliverable and scope. Reported evidence remains caller-reported judgment,
+not a service-issued correctness certificate or production readiness claim.
+
+The present Factory experiment stops at an executable mock. Future actual-product work is a
+separate user-initiated run explicitly adopting the accepted mock, then replacing behavior
+and rerunning applicable component, integration, persistence and operational checks.
+
+## Corrections and resume
+
+Record findings through MCP. Correct spec intent, model meaning or architecture mappings in
+their owning hosted layer. Assess downstream impact and explicitly adopt successor inputs.
+Preserve old work/evidence. Source retirement requires explicit code/data/caller migration;
+removing a graph node alone does not perform it. Resume from recorded assignments, claims,
+issues and exact inputs rather than conversation memory. Keep unobserved harness actions
+and the difference between simulated and actual agent execution explicit.

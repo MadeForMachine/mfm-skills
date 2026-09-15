@@ -124,3 +124,26 @@ a different tenant; it is not permission to move workspace data. If a capability
 absent, record the boundary and continue independent supported work. Implementation
 bootstraps must be explicit; never substitute direct HTTP/database mutations or local
 design files for MCP authority.
+
+## Current v3 pull construction
+
+Design publication remains in `/v2`. New separate-deliverable construction uses
+`mfm_factory_v3_project` and `mfm_factory_v3_mutate`, discovered through the live
+schema. Shared evidence, exact reads, history and audit remain unchanged.
+
+For clients whose registered tool list predates v3, `mfm_factory_mutate` also accepts
+`command: {type: construction_v3, command: <typed v3 command>}`. The schema tool
+advertises this additive dispatch as `x-mcp-construction-dispatch`. The nested command
+is forwarded to `/v3/factory/commands`; it does not reinterpret a legacy command.
+
+The v3 schema supports `start_run`, `claim_next_work`, `report_system`,
+`route_design_issue`, `resolve_design_pause`, `record_scenario`, `accept_run` and
+`lookup_context`. Read [the current construction procedure](references/construction.md).
+The earlier “Construct through the graph” section documents frozen v2 evidence only.
+
+For reports, `expected_version` is the system version returned in claim context.
+For pause resolution and acceptance it is the current run version; for design escalation
+it is the current issue version. New runs/scenarios/lookups expect zero. Claims choose
+and compare current eligibility atomically; their returned token/generation own the attempt.
+Use the exact same envelope/key on uncertain retries. Never reissue a report under a new key
+merely to bypass a stale attempt. Explicit recovery is a new decision with fresh context.

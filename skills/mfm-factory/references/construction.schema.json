@@ -1,0 +1,769 @@
+{
+  "$defs": {
+    "AcceptRun": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "accept_run",
+          "title": "Type",
+          "type": "string"
+        },
+        "run_id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "results": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Results",
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "decision": {
+          "minLength": 1,
+          "title": "Decision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "run_id",
+        "results",
+        "evidence",
+        "decision"
+      ],
+      "title": "AcceptRun",
+      "type": "object"
+    },
+    "Check": {
+      "additionalProperties": false,
+      "properties": {
+        "obligation": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Obligation",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "passed",
+            "failed",
+            "unavailable"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "obligation",
+        "outcome",
+        "evidence"
+      ],
+      "title": "Check",
+      "type": "object"
+    },
+    "ChildInstruction": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "System",
+          "type": "string"
+        },
+        "instructions": {
+          "minLength": 1,
+          "title": "Instructions",
+          "type": "string"
+        }
+      },
+      "required": [
+        "system",
+        "instructions"
+      ],
+      "title": "ChildInstruction",
+      "type": "object"
+    },
+    "ClaimWork": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "claim_next_work",
+          "title": "Type",
+          "type": "string"
+        },
+        "run_id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "lease_seconds": {
+          "default": 900,
+          "maximum": 3600,
+          "minimum": 10,
+          "title": "Lease Seconds",
+          "type": "integer"
+        },
+        "recover_expired": {
+          "default": false,
+          "title": "Recover Expired",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "run_id"
+      ],
+      "title": "ClaimWork",
+      "type": "object"
+    },
+    "Exchange": {
+      "additionalProperties": false,
+      "properties": {
+        "connection": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Connection",
+          "type": "string"
+        },
+        "observation": {
+          "minLength": 1,
+          "title": "Observation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "connection",
+        "observation"
+      ],
+      "title": "Exchange",
+      "type": "object"
+    },
+    "IssueAction": {
+      "additionalProperties": false,
+      "properties": {
+        "issue_id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "action": {
+          "enum": [
+            "propose",
+            "escalate"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "explanation": {
+          "minLength": 1,
+          "title": "Explanation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "issue_id",
+        "version",
+        "action",
+        "explanation"
+      ],
+      "title": "IssueAction",
+      "type": "object"
+    },
+    "LookupContext": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "lookup_context",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "claim_id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Claim Id",
+          "type": "string"
+        },
+        "design_ids": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Design Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "claim_id",
+        "design_ids"
+      ],
+      "title": "LookupContext",
+      "type": "object"
+    },
+    "ReportSystem": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "report_system",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "run_id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "system": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "System",
+          "type": "string"
+        },
+        "claim_id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Claim Id",
+          "type": "string"
+        },
+        "token": {
+          "minLength": 1,
+          "title": "Token",
+          "type": "string"
+        },
+        "generation": {
+          "minimum": 1,
+          "title": "Generation",
+          "type": "integer"
+        },
+        "transition": {
+          "enum": [
+            "prepared",
+            "delivered",
+            "blocked",
+            "resolved",
+            "interrupted"
+          ],
+          "title": "Transition",
+          "type": "string"
+        },
+        "summary": {
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "artifact": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifact"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/Check"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "child_results": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_.-]*$": {
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            }
+          },
+          "title": "Child Results",
+          "type": "object"
+        },
+        "child_instructions": {
+          "items": {
+            "$ref": "#/$defs/ChildInstruction"
+          },
+          "title": "Child Instructions",
+          "type": "array"
+        },
+        "issue_category": {
+          "default": "construction",
+          "enum": [
+            "construction",
+            "spec",
+            "model",
+            "architecture"
+          ],
+          "title": "Issue Category",
+          "type": "string"
+        },
+        "actions": {
+          "items": {
+            "$ref": "#/$defs/IssueAction"
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "run_id",
+        "system",
+        "claim_id",
+        "token",
+        "generation",
+        "transition",
+        "summary",
+        "evidence"
+      ],
+      "title": "ReportSystem",
+      "type": "object"
+    },
+    "ResolvePause": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "resolve_design_pause",
+          "title": "Type",
+          "type": "string"
+        },
+        "run_id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "decision": {
+          "minLength": 1,
+          "title": "Decision",
+          "type": "string"
+        },
+        "assessment": {
+          "minLength": 1,
+          "title": "Assessment",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "successor": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Successor"
+        }
+      },
+      "required": [
+        "type",
+        "run_id",
+        "decision",
+        "assessment",
+        "evidence"
+      ],
+      "title": "ResolvePause",
+      "type": "object"
+    },
+    "RouteDesignIssue": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "route_design_issue",
+          "title": "Type",
+          "type": "string"
+        },
+        "issue_id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "system": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "System",
+          "type": "string"
+        },
+        "explanation": {
+          "minLength": 1,
+          "title": "Explanation",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "issue_id",
+        "system",
+        "explanation",
+        "evidence"
+      ],
+      "title": "RouteDesignIssue",
+      "type": "object"
+    },
+    "ScenarioResult": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "record_scenario",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "run_id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "scenario": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Scenario",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "passed",
+            "failed"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "code_evidence": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Code Evidence",
+          "type": "string"
+        },
+        "data_evidence": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Data Evidence",
+          "type": "string"
+        },
+        "trace_evidence": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Trace Evidence",
+          "type": "string"
+        },
+        "exchanges": {
+          "items": {
+            "$ref": "#/$defs/Exchange"
+          },
+          "minItems": 1,
+          "title": "Exchanges",
+          "type": "array"
+        },
+        "observations": {
+          "minLength": 1,
+          "title": "Observations",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "run_id",
+        "scenario",
+        "outcome",
+        "code_evidence",
+        "data_evidence",
+        "trace_evidence",
+        "exchanges",
+        "observations"
+      ],
+      "title": "ScenarioResult",
+      "type": "object"
+    },
+    "StartRun": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "start_run",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "spec_variant": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Spec Variant",
+          "type": "string"
+        },
+        "architecture_variant": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Architecture Variant",
+          "type": "string"
+        },
+        "spec_revision": {
+          "minimum": 1,
+          "title": "Spec Revision",
+          "type": "integer"
+        },
+        "model_revision": {
+          "minimum": 1,
+          "title": "Model Revision",
+          "type": "integer"
+        },
+        "architecture_revision": {
+          "minimum": 1,
+          "title": "Architecture Revision",
+          "type": "integer"
+        },
+        "deliverable": {
+          "enum": [
+            "mock",
+            "product"
+          ],
+          "title": "Deliverable",
+          "type": "string"
+        },
+        "adopted_mock": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Adopted Mock"
+        },
+        "predecessor": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Predecessor"
+        },
+        "scenarios": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Scenarios",
+          "type": "array"
+        },
+        "plan": {
+          "items": {
+            "$ref": "#/$defs/SystemPlan"
+          },
+          "minItems": 1,
+          "title": "Plan",
+          "type": "array"
+        },
+        "assessment": {
+          "minLength": 1,
+          "title": "Assessment",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "spec_variant",
+        "architecture_variant",
+        "spec_revision",
+        "model_revision",
+        "architecture_revision",
+        "deliverable",
+        "scenarios",
+        "plan",
+        "assessment"
+      ],
+      "title": "StartRun",
+      "type": "object"
+    },
+    "SystemPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "System",
+          "type": "string"
+        },
+        "instructions": {
+          "minLength": 1,
+          "title": "Instructions",
+          "type": "string"
+        },
+        "sibling_order": {
+          "minimum": 0,
+          "title": "Sibling Order",
+          "type": "integer"
+        },
+        "preparation_required": {
+          "default": false,
+          "title": "Preparation Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "system",
+        "instructions",
+        "sibling_order"
+      ],
+      "title": "SystemPlan",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "project_slug": {
+      "pattern": "^[a-z][a-z0-9_.-]*$",
+      "title": "Project Slug",
+      "type": "string"
+    },
+    "idempotency_key": {
+      "pattern": "^[a-z][a-z0-9_.-]*$",
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "reason": {
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "expected_version": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Expected Version",
+      "type": "integer"
+    },
+    "causes": {
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 100,
+      "title": "Causes",
+      "type": "array"
+    },
+    "command": {
+      "discriminator": {
+        "mapping": {
+          "accept_run": "#/$defs/AcceptRun",
+          "claim_next_work": "#/$defs/ClaimWork",
+          "lookup_context": "#/$defs/LookupContext",
+          "record_scenario": "#/$defs/ScenarioResult",
+          "report_system": "#/$defs/ReportSystem",
+          "resolve_design_pause": "#/$defs/ResolvePause",
+          "route_design_issue": "#/$defs/RouteDesignIssue",
+          "start_run": "#/$defs/StartRun"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/StartRun"
+        },
+        {
+          "$ref": "#/$defs/ClaimWork"
+        },
+        {
+          "$ref": "#/$defs/ReportSystem"
+        },
+        {
+          "$ref": "#/$defs/ResolvePause"
+        },
+        {
+          "$ref": "#/$defs/RouteDesignIssue"
+        },
+        {
+          "$ref": "#/$defs/ScenarioResult"
+        },
+        {
+          "$ref": "#/$defs/AcceptRun"
+        },
+        {
+          "$ref": "#/$defs/LookupContext"
+        }
+      ],
+      "title": "Command"
+    }
+  },
+  "required": [
+    "project_slug",
+    "idempotency_key",
+    "reason",
+    "command"
+  ],
+  "title": "Envelope",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

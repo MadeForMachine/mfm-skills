@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from mfm_factory_formats.commands import Envelope  # noqa: E402
+from mfm_factory_formats.construction import Envelope as ConstructionEnvelope  # noqa: E402
 from mfm_factory_formats.formats import Architecture, DataModel  # noqa: E402
 
 
@@ -28,10 +29,12 @@ def resources():
         "skills/mfm-data-model-local/scripts/model.py": "src/mfm_data_model/model.py",
         "skills/mfm-data-model-local/scripts/__init__.py": "src/mfm_data_model/__init__.py",
     }
-    for name in ("__init__.py", "formats.py", "commands.py"):
+    for name in ("__init__.py", "formats.py", "commands.py", "construction.py"):
         copies[f"skills/mfm-factory/scripts/{name}"] = f"src/mfm_factory_formats/{name}"
+    for name in ("mfm-spec.schema.json", "mfm-spec-manifest.schema.json"):
+        copies[f"src/mfm_factory_formats/schemas/{name}"] = f"formats/spec/{name}"
     result = {destination: (ROOT / source).read_bytes() for destination, source in copies.items()}
-    for name, model in (("data-model", DataModel), ("architecture", Architecture), ("commands", Envelope)):
+    for name, model in (("data-model", DataModel), ("architecture", Architecture), ("commands", Envelope), ("construction", ConstructionEnvelope)):
         schema = model.model_json_schema(by_alias=True)
         schema["$schema"] = "https://json-schema.org/draft/2020-12/schema"
         result[f"skills/mfm-factory/references/{name}.schema.json"] = (

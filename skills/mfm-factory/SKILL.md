@@ -3,9 +3,9 @@ name: mfm-factory
 description: >-
   Use for MadeForMachine Factory projects, including development of the Factory
   itself: maintain hosted specs, logical data models and architecture variants,
-  then construct an executable mock and replace it with verified implementation
+  then construct an executable mock and separately initiate verified implementation
   through MCP-recorded work. Use for construction feedback and resuming these projects.
-version: 1.1.1
+version: 1.2.0
 status: alpha
 public: false
 connector: mfm
@@ -95,9 +95,12 @@ the user's authority. Preserve the exact tuple actually chosen for the run.
 
 Read [construction and feedback](references/construction.md). Build an **executable
 mock product first**, using coherent agent-generated scenario data to exercise the
-agreed complete product flows through actual declared interfaces. Record results,
-then replace mocked behavior component by component and repeat relevant scenarios.
-Passing the mock milestone does not mean the product is production-complete.
+agreed complete product flows through actual declared interfaces. Use the discovered
+v3 pull protocol, one fresh invocation per system claim, aggregate direct-child
+feedback and explicit user resolution of design pauses. Accept the mock separately.
+Actual-product construction is a separately initiated run adopting an accepted mock;
+it replaces mocked behavior component by component and repeats relevant scenarios.
+Mock acceptance does not mean the product is production-complete.
 
 When a finding changes intent, data meaning or architecture, correct the responsible
 hosted design through MCP within existing authority. Ask the user about unresolved

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0 — 2026-09-15 · MAJOR workflow change
+
+Separate executable-mock and actual-product runs. Add discovered v3 pull claims,
+fresh bounded worker contexts, aggregate feedback, expiry recovery and explicit
+design-pause resolution. Bundle the generated v3 command schema. Retain v2 as
+historical workflow documentation; public deployment remains unverified.
+
 ## 1.1.1 — 2026-09-15
 
 Make hosted specification authoring self-contained. Bundle the spec reference and
