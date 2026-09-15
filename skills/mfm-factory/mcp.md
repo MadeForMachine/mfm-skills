@@ -3,6 +3,9 @@
 Discover live signatures with `mfm_factory_schema`. The portable envelope is defined
 in [commands.schema.json](references/commands.schema.json), generated from
 [commands.py](scripts/commands.py). The deployed schema decides what is supported.
+Bundled Python files come from the neutral format library, not a local-authoring
+skill. Hosted spec authoring uses this skill's own
+[reference](references/spec-authoring.md).
 
 | Work | Tools |
 | --- | --- |

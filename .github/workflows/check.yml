@@ -1,0 +1,11 @@
+name: Skill and format checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t mfm-skills-check .
+      - run: docker run --rm mfm-skills-check

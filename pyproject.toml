@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mfm-spec-format"
-version = "0.5.2"
+version = "0.5.3"
 description = "Reference parser, renderer, and linter for the MFM Spec open format"
-readme = "skills/mfm-spec-local/README.md"
+readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 dependencies = ["PyYAML>=6.0", "pydantic>=2,<3"]
@@ -15,9 +15,9 @@ dependencies = ["PyYAML>=6.0", "pydantic>=2,<3"]
 mfm-spec-lint = "mfm_spec_lint:main"
 
 [tool.setuptools]
-package-dir = {"" = "skills/mfm-spec-local", "mfm_data_model" = "skills/mfm-data-model-local/scripts", "mfm_factory_formats" = "skills/mfm-factory/scripts"}
+package-dir = {"" = "src"}
 py-modules = ["mfm_spec_lint"]
 packages = ["mfm_data_model", "mfm_factory_formats"]
 
 [tool.pytest.ini_options]
-testpaths = ["skills/mfm-spec-local"]
+testpaths = ["tests"]

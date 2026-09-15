@@ -5,6 +5,13 @@ skill's behaviour or the MFM Spec format it targets; plan to re-read the skill
 after a major bump. The skill version tracks the skill itself; the MFM Spec
 Format version it targets is noted per release.
 
+## 0.8.3 — 2026-09-15
+
+Keep the original local workflow specification-only and self-contained. Its
+validator and format references are generated from neutral library sources.
+No hosted connection or sibling skill is required; the validator entry point
+remains compatible.
+
 ## 0.8.2 — 2026-08-05
 - Adds Codex UI metadata with the canonical display name **MFM Spec Local**.
 - Keeps implicit invocation enabled while preserving `mfm-spec-local` as the stable skill id.

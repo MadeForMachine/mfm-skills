@@ -7,12 +7,12 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from .formats import Architecture, DataModel
+from mfm_factory_formats.formats import Architecture, DataModel
 
 
 @pytest.fixture
 def example():
-    return json.loads((Path(__file__).parents[1] / "references/example.json").read_text())
+    return json.loads((Path(__file__).parents[2] / "skills/mfm-factory/references/example.json").read_text())
 
 
 def test_example_and_schema_roundtrip(example):

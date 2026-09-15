@@ -5,7 +5,7 @@ description: >-
   itself: maintain hosted specs, logical data models and architecture variants,
   then construct an executable mock and replace it with verified implementation
   through MCP-recorded work. Use for construction feedback and resuming these projects.
-version: 1.1.0
+version: 1.1.1
 status: alpha
 public: false
 connector: mfm
@@ -30,6 +30,9 @@ Read the project's binding and discover the actual tool capabilities. A service-
 spec may run in local Docker; do not assume it belongs to the public MFM deployment.
 Use MCP records as the working source of truth for design and construction. Repository
 exports are mirrors; do not edit them as a substitute for hosted mutations.
+This skill is self-contained, including hosted specification authoring. Do not load
+the local spec or local model skills for this workflow. A service running in local
+Docker is still hosted authority; “local” in MFM Spec Local means file authority.
 Use the customer's ordinary development tools for code, fixtures and tests, and
 record their exact inputs, work and evidence through MCP. This workflow also applies
 when the project being constructed is the Factory itself.
@@ -63,6 +66,7 @@ empty layers display “No version yet”. A change creates a revision; review a
 not. There is no separate draft choice, and completeness is visible independently.
 
 Use the existing MFM Spec format for intent, responsibilities, features and criteria.
+Read [hosted spec authoring](references/spec-authoring.md) when working on that layer.
 The authoritative project policy and actual mutation schema govern how to edit it.
 Read the map, then the affected nodes; validate one coherent mutation batch before
 committing it with the read revision and a meaningful change note. Re-read conflicts.

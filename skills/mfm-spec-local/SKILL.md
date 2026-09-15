@@ -1,12 +1,11 @@
 ---
 name: mfm-spec-local
 description: >-
-  Use when creating or evolving MFM Spec as local project files. Collaboratively
-  turn rough software intent into a typed graph of components, features, criteria,
-  and evaluation notes; design, architect, reorganize, review, trace design impact,
-  impact, or document feedback against a spec revision. For hosted service-backed
-  MFM Spec, use the mfm-spec skill instead.
-version: 0.8.2
+  Write, validate, review, and evolve specifications in local project files using
+  the MFM Spec graph of components, features, criteria, and evaluations. Covers
+  specification only, not logical models, architecture, or construction. Hosted
+  Factory projects use mfm-factory; hosted spec-only projects use mfm-spec.
+version: 0.8.3
 status: mvp
 public: true
 connector: null
@@ -15,6 +14,10 @@ license: MIT
 ---
 
 # MFM Spec Local
+
+This original local skill covers specification only. It is self-contained: its
+format reference and executable validator are bundled here, with no other skill or
+MCP dependency. Model, architecture, and construction are outside this skill's scope.
 
 > Part of **MFM** · [mfm.dev](https://mfm.dev)
 

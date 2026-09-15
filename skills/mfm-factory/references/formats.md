@@ -3,10 +3,13 @@
 Use **MFM Data Model 1** (`mfm-data-model/1`) and **MFM Architecture 1**
 (`mfm-architecture/1`). These small JSON-compatible formats extend the project's
 existing concepts. YAML is a readable rendering, not another authority.
-The canonical definitions are [Pydantic models](../scripts/formats.py); generated
+The bundled [Pydantic models](../scripts/formats.py) and generated
 [Data Model JSON Schema](data-model.schema.json) and
 [Architecture JSON Schema](architecture.schema.json) describe their document shape.
 Format versions are independent of user-facing content revisions and skill releases.
+The code and schemas are generated from the neutral `src/mfm_factory_formats`
+package in mfm-skills. Edit that source and regenerate bundles when maintaining
+the skill; installed agents can use this folder alone.
 The [small order example](example.json) illustrates both documents; it deliberately
 labels its missing failure and persistence coverage and is not a complete product design.
 
